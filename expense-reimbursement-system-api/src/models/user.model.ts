@@ -1,4 +1,4 @@
-import Role from "./role.model";
+import Role from './role.model';
 
 export default class User {
     constructor(
@@ -9,5 +9,5 @@ export default class User {
         lastName: string,
         email: string,
         role: Role
-    ) { };
+    ) { }
 }
