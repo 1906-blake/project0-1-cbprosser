@@ -12,24 +12,31 @@ export const usersRouter = express.Router();
 
 /**
  * This endpoint returns all users on the system if the
- * current user has Administrator level access. Finance
- * Manager access returns all users that are not
- * Administrators.
+ * current user has Administrator or Finance Manager
+ * level access.
  */
-usersRouter.get('', [ authMiddleware('Administrator', 'Finance Manager'),
-                      async (req, res) => {
-                              const users = await usersDAO.findAllUsers();
-                                  res.json(users);
-                                } ]);
+usersRouter.get('', [authMiddleware('Administrator', 'Finance Manager'),
+async (req, res) => {
+    const users = await usersDAO.findAllUsers();
+    res.json(users);
+}]);
 
 /**
  * This endpoint returns a user by their ID. All levels
  * may access this, but employees' IDs must match the
  * provided ID or it won't return.
  */
-usersRouter.get('/:id', (req, res) => {
-    res.send('Find all users by ID functionality still needs implemented!');
-});
+usersRouter.get('/:id', [authMiddleware('Administrator', 'Finance Manager' , 'Employee'),
+async (req, res) => {
+    const user = req.session.user;
+    if (user && (user.userId === +req.params.id || user.role.role === 'Administrator' || user.role.role === 'Finance Manager')) {
+        const users = await usersDAO.findByUserID(req.params.id);
+        res.json(users);
+    } else {
+        res.status(400);
+        res.send('You can only access your own information.');
+    }
+}]);
 
 
 /**
