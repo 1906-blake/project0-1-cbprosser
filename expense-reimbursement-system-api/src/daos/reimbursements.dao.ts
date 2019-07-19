@@ -39,7 +39,7 @@ export async function createReimbursement(reimbursement: Reimbursement) {
     }
 }
 
-export async function findByReimbursementID(id: string) {
+export async function findByReimbursementStatus(status: string) {
     let client: PoolClient;
     try {
         client = await connectionPool.connect();
@@ -50,6 +50,29 @@ export async function findByReimbursementID(id: string) {
         LEFT JOIN ers_user e1 ON (r.author_id = e1.user_id)
         LEFT JOIN ers_user e2 ON (r.resolver_id = e1.user_id)
         WHERE reimbursement_status = $1
+        ORDER BY date_submitted`;
+        const result = await client.query(queryString, [status]);
+        const sqlReimbursement = result.rows;
+        return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+    } catch (err) {
+        console.log(err);
+        return undefined;
+    } finally {
+        client && client.release();
+    }
+}
+
+export async function findByUserID(id: number) {
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect();
+        const queryString = `
+        SELECT * FROM reimbursement r
+        LEFT JOIN reimbursement_status USING (status_id)
+        LEFT JOIN reimbursement_type USING (type_id)
+        LEFT JOIN ers_user e1 ON (r.author_id = e1.user_id)
+        LEFT JOIN ers_user e2 ON (r.resolver_id = e1.user_id)
+        WHERE author_id = $1
         ORDER BY date_submitted`;
         const result = await client.query(queryString, [id]);
         const sqlReimbursement = result.rows;

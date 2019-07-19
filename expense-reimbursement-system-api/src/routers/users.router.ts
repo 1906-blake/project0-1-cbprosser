@@ -28,8 +28,8 @@ async (req, res) => {
  */
 usersRouter.get('/:id', [authMiddleware('Administrator', 'Finance Manager' , 'Employee'),
 async (req, res) => {
-    const user = req.session.user;
-    if (user && (user.userId === +req.params.id || user.role.role === 'Administrator' || user.role.role === 'Finance Manager')) {
+    const currentUser = req.session.user;
+    if (currentUser && (currentUser.userId === +req.params.id || currentUser.role.role === 'Administrator' || currentUser.role.role === 'Finance Manager')) {
         const users = await usersDAO.findByUserID(req.params.id);
         res.json(users);
     } else {

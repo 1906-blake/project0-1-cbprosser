@@ -24,7 +24,7 @@ async (req, res) => {
     if (!reimbursementId) {
         res.sendStatus(400);
     } else {
-        const reimbursements = await reimbursementDAO.findByReimbursementID(reimbursementId);
+        const reimbursements = await reimbursementDAO.findByReimbursementStatus(reimbursementId);
         res.json(reimbursements);
     }
 }]);
@@ -38,9 +38,17 @@ async (req, res) => {
  * CHALLENGE: As above
  *  /reimbursements/author/userId/:userId/date-submitted?start=:startDate&end=:endDate
  */
-reimbursementsRouter.get('/author/userId:userId', (req, res) => {
-    res.send('Reimbursements by user functionality still needs implemented!');
-});
+reimbursementsRouter.get('/author/userId/:id', [authMiddleware('Administrator', 'Finance Manager', 'Employee'),
+async (req, res) => {
+    const currentUser = req.session.user;
+    if (currentUser && (currentUser.userId === +req.params.id || currentUser.role.role === 'Administrator' || currentUser.role.role === 'Finance Manager')) {
+        const users = await reimbursementDAO.findByUserID(req.params.id);
+        res.json(users);
+    } else {
+        res.status(400);
+        res.send('You can only access your own information.');
+    }
+}]);
 
 /**
  * This allows a user to create a reimbursement. It will return
