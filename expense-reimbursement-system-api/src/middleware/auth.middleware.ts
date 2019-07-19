@@ -9,12 +9,16 @@
  */
 
 export const authMiddleware = (...roles: string[]) => (req, res, next) => {
-    const userRole = req.session.Role;
+    const userRole = req.session.user;
     if (userRole) {
-        if (roles.includes(userRole.role)) {
+        if (roles.includes(userRole.role.role)) {
             next();
+        } else {
+            res.status(403);
+            res.send('You are not authorized for this operation');
         }
-        res.sendStatus(403);
+    } else {
+        res.status(401);
+        res.send('You are not authorized for this operation');
     }
-    res.sendStatus(401);
 };

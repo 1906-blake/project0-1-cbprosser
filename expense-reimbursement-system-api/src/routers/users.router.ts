@@ -5,6 +5,8 @@
  */
 
 import express from 'express';
+import * as usersDAO from '../daos/users.dao';
+import { authMiddleware } from '../middleware/auth.middleware';
 
 export const usersRouter = express.Router();
 
@@ -14,9 +16,11 @@ export const usersRouter = express.Router();
  * Manager access returns all users that are not
  * Administrators.
  */
-usersRouter.get('', (req, res) => {
-    res.send('Find all users functionality still needs implemented!');
-});
+usersRouter.get('', [ authMiddleware('Administrator', 'Finance Manager'),
+                      async (req, res) => {
+                              const users = await usersDAO.findAllUsers();
+                                  res.json(users);
+                                } ]);
 
 /**
  * This endpoint returns a user by their ID. All levels
