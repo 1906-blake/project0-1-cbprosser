@@ -1,6 +1,6 @@
 export default class Role {
     constructor(
-        public roleId: number,
-        public role: string
+        public roleId = 0,
+        public role = ''
     ) { }
 }

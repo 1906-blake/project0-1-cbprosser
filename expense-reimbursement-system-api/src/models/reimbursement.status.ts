@@ -1,6 +1,6 @@
 export default class ReimbursementStatus {
     constructor(
-        public statusId: number,
-        public status: string
+        public statusId = 0,
+        public status = ''
     ) { }
 }

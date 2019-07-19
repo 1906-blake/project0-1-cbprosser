@@ -38,6 +38,26 @@ async (req, res) => {
     }
 }]);
 
+/**
+ * This endpoint creates a new user. Administrators are
+ * the only ones with access to this endpoint.
+ */
+usersRouter.post('', [authMiddleware('Administrator'),
+async (req, res) => {
+    const user = req.body;
+    if (!user) {
+        res.sendStatus(400);
+    } else {
+        const id = await usersDAO.createUser(user);
+        if (!id) {
+            res.sendStatus(400);
+        } else {
+            user.id = id;
+            res.status(201); // created status code
+            res.json(user);
+        }
+    }
+}]);
 
 /**
  * This endpoint updates a user. Administrators are the

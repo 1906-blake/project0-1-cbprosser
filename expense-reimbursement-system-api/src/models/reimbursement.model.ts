@@ -19,12 +19,12 @@ import ReimbursementType from './reimbursement.type';
 
 export default class Reimbursement {
     constructor(
-        public reimbursementId: number,
+        public reimbursementId = 0,
         public author: User,
-        public amount: number,
-        public dateSubmitted: number,
-        public dateResolved: number,
-        public description: string,
+        public amount = 0,
+        public dateSubmitted = 0,
+        public dateResolved = 0,
+        public description = '',
         public resolver: User,
         public status: ReimbursementStatus,
         public type: ReimbursementType
