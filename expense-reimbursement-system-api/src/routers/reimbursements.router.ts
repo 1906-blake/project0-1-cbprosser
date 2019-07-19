@@ -18,9 +18,16 @@ export const reimbursementsRouter = express.Router();
  * CHALLENGE: Have the DB sort using
  * /reimbursements/status/:statudId/date-submitted?start=:startDate&end=:endDate
  */
-reimbursementsRouter.get('/status/:statusId', (req, res) => {
-    res.send('Reimbursements by status id functionality still needs implemented!');
-});
+reimbursementsRouter.get('/status/:statusId', [authMiddleware('Administrator', 'Finance Manager'),
+async (req, res) => {
+    const reimbursementId = req.params.statusId;
+    if (!reimbursementId) {
+        res.sendStatus(400);
+    } else {
+        const reimbursements = await reimbursementDAO.findByReimbursementID(reimbursementId);
+        res.json(reimbursements);
+    }
+}]);
 
 /**
  * This returns all reimbursements by a single user. This may
