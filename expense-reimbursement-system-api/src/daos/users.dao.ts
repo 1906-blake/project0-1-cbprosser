@@ -1,6 +1,7 @@
 /**
  * This DAO provides sql access to the ers database,
- * and provides the functionality to interact with it.
+ * and provides the functionality to interact with
+ * users.
  */
 import { PoolClient } from 'pg';
 import { connectionPool } from '../utils/connection.util';
@@ -37,7 +38,8 @@ export async function findAllUsers() {
         SELECT *
         FROM ers_user e
         FULL JOIN role r
-        ON (e.role = r.role_id)`;
+        ON (e.role = r.role_id)
+        ORDER BY user_id`;
         const result = await client.query(queryString);
         const sqlUsers = result.rows;
         return sqlUsers && sqlUsers.map(convertSQLUser);
@@ -100,7 +102,8 @@ export async function patchUser(user: User) {
     };
     let client: PoolClient;
     try {
-        client = await connectionPool.connect(); // basically .then is everything after this
+        client = await connectionPool.connect();
+        // This query uses a CTE to make two queries into one.
         const queryString = `
             WITH updated_user AS(
                 UPDATE ers_user SET username = $1, password = $2, first_name = $3, last_name = $4, email = $5, role = $6
@@ -110,11 +113,10 @@ export async function patchUser(user: User) {
             SELECT *
             FROM updated_user u
             FULL JOIN role r
-            ON (U.role = r.role_id)
+            ON (u.role = r.role_id)
             WHERE user_id = $7
         `;
         const params = [user.username, user.password, user.firstName, user.lastName, user.email, user.role.roleId, user.userId];
-        console.log(params);
         const result = await client.query(queryString, params);
         const sqlUser = result.rows[0];
         return convertSQLUser(sqlUser);

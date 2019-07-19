@@ -14,8 +14,8 @@
  */
 
 import User from './user.model';
-import ReimbursementStatus from './reimbursement.status';
-import ReimbursementType from './reimbursement.type';
+import ReimbursementStatus from './reimbursement.status.model';
+import ReimbursementType from './reimbursement.type.model';
 
 export default class Reimbursement {
     constructor(

@@ -5,6 +5,8 @@
  */
 
 import express from 'express';
+import { authMiddleware } from '../middleware/auth.middleware';
+import * as reimbursementDAO from '../daos/reimbursements.dao';
 
 export const reimbursementsRouter = express.Router();
 
@@ -38,9 +40,18 @@ reimbursementsRouter.get('/author/userId:userId', (req, res) => {
  * a status code of 201 CREATED if successful. ReimbursementID
  * should be sent as 0, and the DB will serialize it.
  */
-reimbursementsRouter.post('', (req, res) => {
-    res.send('Reimbursement submissions functionality still needs implemented!');
-});
+reimbursementsRouter.post('', [authMiddleware('Administrator', 'Finance Manager', 'Employee'),
+async (req, res) => {
+    const reimbursement = req.body;
+    if (!reimbursement) {
+        res.sendStatus(400);
+    } else {
+        const user = req.session.user;
+        reimbursement.author = user;
+        const result = await reimbursementDAO.createReimbursement(reimbursement);
+        res.send(result);
+    }
+}]);
 
 /**
  * This allows a Finance Manager or Administrator to update the
