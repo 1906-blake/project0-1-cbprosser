@@ -63,6 +63,14 @@ async (req, res) => {
  * This endpoint updates a user. Administrators are the
  * only ones who may access this endpoint.
  */
-usersRouter.patch('/:id', (req, res) => {
-    res.send('Update user functionality still needs implemented!');
-});
+usersRouter.patch('', [authMiddleware('Administrator'),
+async (req, res) => {
+    const userToUpdate = req.body;
+    const updatedUser = await usersDAO.patchUser(userToUpdate);
+    if (!updatedUser) {
+        res.status(400);
+        res.send('That user id does not exist.');
+    } else {
+        res.send(updatedUser);
+    }
+}]);

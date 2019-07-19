@@ -17,7 +17,6 @@ export const authRouter = express.Router();
 authRouter.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await usersDAO.findUserByUserPass(username, password);
-    console.log(user);
     if (user) {
         req.session.user = user;
         res.status(200);

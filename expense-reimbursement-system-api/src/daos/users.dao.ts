@@ -88,3 +88,40 @@ export async function createUser(user: User) {
         client && client.release();
     }
 }
+
+export async function patchUser(user: User) {
+    const oldUser = await findByUserID(user.userId);
+    if (!oldUser) {
+        return undefined;
+    }
+    user = {
+        ...oldUser,
+        ...user
+    };
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect(); // basically .then is everything after this
+        const queryString = `
+            WITH updated_user AS(
+                UPDATE ers_user SET username = $1, password = $2, first_name = $3, last_name = $4, email = $5, role = $6
+                WHERE user_id = $7
+                RETURNING *
+                )
+            SELECT *
+            FROM updated_user u
+            FULL JOIN role r
+            ON (U.role = r.role_id)
+            WHERE user_id = $7
+        `;
+        const params = [user.username, user.password, user.firstName, user.lastName, user.email, user.role.roleId, user.userId];
+        console.log(params);
+        const result = await client.query(queryString, params);
+        const sqlUser = result.rows[0];
+        return convertSQLUser(sqlUser);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        client && client.release();
+    }
+    return undefined;
+}
