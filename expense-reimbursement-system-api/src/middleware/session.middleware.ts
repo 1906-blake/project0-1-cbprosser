@@ -8,7 +8,7 @@ import session from 'express-session';
 
 const sessionConfiguration = {
     secret: 'rev.cbprosser',
-    cookie: { secure: true }
+    cookie: { secure: false }
 };
 
 export const sessionMiddleware = session(sessionConfiguration);

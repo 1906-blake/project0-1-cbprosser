@@ -1,6 +1,6 @@
 export default class ReimbursementType {
     constructor(
-        typeId: number,
-        type: string
+        public typeId: number,
+        public type: string
     ) { }
 }

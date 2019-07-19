@@ -3,6 +3,7 @@
  */
 
 import express from 'express';
+import * as usersDAO from '../daos/users.dao';
 
 export const authRouter = express.Router();
 
@@ -13,16 +14,19 @@ export const authRouter = express.Router();
  * (Okay). Otherwise, destroy the current session, set the status to
  * 400 (Bad Request), and then send the "Invalid Credentials" message.
  */
-authRouter.post('/login', (req, res) => {
+authRouter.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    const user = usersDAO.findUserByUserPass(username, password);
+    const user = await usersDAO.findUserByUserPass(username, password);
+    console.log(user);
     if (user) {
         req.session.user = user;
-        res.sendStatus(200);
+        res.status(200);
+        res.json(user);
+    } else {
+        req.session.destroy(() => { });
+        res.status(400);
+        res.send('Invalid credentials');
     }
-    req.session.destroy(() => { });
-    res.status(400);
-    res.send('Invalid credentials');
 });
 
 /**
