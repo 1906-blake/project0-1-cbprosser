@@ -74,6 +74,15 @@ async (req, res) => {
  * as the DB, but any missing fields will not be updated. Returns
  * the updated reimbursement.
  */
-reimbursementsRouter.patch('', (req, res) => {
-    res.send('Reimbursement updates functionality still needs implemented!');
-});
+reimbursementsRouter.patch('', [authMiddleware('Administrator', 'Finance Manager'),
+async (req, res) => {
+    const reimbursement = req.body;
+    if (!reimbursement) {
+        res.sendStatus(400);
+    } else {
+        const user = req.session.user;
+        reimbursement.resolver = user;
+        const result = await reimbursementDAO.patchReimbursement(reimbursement);
+        res.send(result);
+    }
+}]);
