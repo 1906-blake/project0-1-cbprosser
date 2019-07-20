@@ -48,13 +48,13 @@ async (req, res) => {
     if (!user) {
         res.sendStatus(400);
     } else {
-        const id = await usersDAO.createUser(user);
-        if (!id) {
+        const newUser = await usersDAO.createUser(user);
+        if (!newUser) {
             res.sendStatus(400);
         } else {
-            user.id = id;
+            newUser;
             res.status(201); // created status code
-            res.json(user);
+            res.json(newUser);
         }
     }
 }]);

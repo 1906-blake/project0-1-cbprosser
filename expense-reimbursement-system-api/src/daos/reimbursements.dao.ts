@@ -22,7 +22,7 @@ export async function createReimbursement(reimbursement: Reimbursement) {
                 AND (t.reimbursement_type = $1)
             )
             INSERT INTO reimbursement(author_id, amount, date_submitted, description, status_id, type_id)
-            VALUES ($2, $3, current_timestamp, $4, (SELECT status_id FROM cte), (SELECT type_id FROM CTE))
+            VALUES ($2, $3, current_timestamp, $4, (SELECT status_id FROM cte), (SELECT type_id FROM cte))
             RETURNING *
         )
         SELECT * FROM inserted

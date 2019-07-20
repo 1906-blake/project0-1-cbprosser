@@ -64,6 +64,7 @@ async (req, res) => {
         const user = req.session.user;
         reimbursement.author = user;
         const result = await reimbursementDAO.createReimbursement(reimbursement);
+        res.status(201);
         res.send(result);
     }
 }]);
