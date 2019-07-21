@@ -22,10 +22,18 @@ export const reimbursementsRouter = express.Router();
 reimbursementsRouter.get('/status/:statusId', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager'),
 async (req, res) => {
     const reimbursementId = req.params.statusId;
+    let count, page;
+    if (req.query.count !== undefined && req.query.page !== undefined) {
+        count = (req.query.count > 10) ? 10 : (req.query.count < 1) ? 1 : req.query.count;
+        page = (req.query.page > 0) ? count * (req.query.page - 1) : 0;
+    } else {
+        count = 10;
+        page = 0;
+    }
     if (!reimbursementId) {
         res.sendStatus(400);
     } else {
-        const reimbursements = await reimbursementDAO.findByReimbursementStatus(reimbursementId);
+        const reimbursements = await reimbursementDAO.findByReimbursementStatus(reimbursementId, count, page);
         res.json(reimbursements);
     }
 }]);
@@ -42,8 +50,16 @@ async (req, res) => {
 reimbursementsRouter.get('/author/userId/:id', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager', 'Employee'),
 async (req, res) => {
     const currentUser = req.decoded.user;
+    let count, page;
+    if (req.query.count !== undefined && req.query.page !== undefined) {
+        count = (req.query.count > 10) ? 10 : (req.query.count < 1) ? 1 : req.query.count;
+        page = (req.query.page > 0) ? count * (req.query.page - 1) : 0;
+    } else {
+        count = 10;
+        page = 0;
+    }
     if (currentUser && (currentUser.userId === +req.params.id || currentUser.role.role === 'Administrator' || currentUser.role.role === 'Finance Manager')) {
-        const users = await reimbursementDAO.findByUserID(req.params.id);
+        const users = await reimbursementDAO.findByUserID(req.params.id, count, page);
         res.json(users);
     } else {
         res.status(400);

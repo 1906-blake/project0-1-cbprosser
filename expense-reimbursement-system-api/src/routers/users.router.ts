@@ -21,7 +21,7 @@ async (req, res) => {
     let count, page;
     if (req.query.count !== undefined && req.query.page !== undefined) {
         count = (req.query.count > 10) ? 10 : (req.query.count < 1) ? 1 : req.query.count;
-        page = count * (req.query.page - 1);
+        page = (req.query.page > 0) ? count * (req.query.page - 1) : 0;
     } else {
         count = 10;
         page = 0;
