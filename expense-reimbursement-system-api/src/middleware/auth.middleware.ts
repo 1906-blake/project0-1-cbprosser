@@ -9,7 +9,7 @@
  */
 
 export const authMiddleware = (...roles: string[]) => (req, res, next) => {
-    const userRole = req.session.user;
+    const userRole = req.decoded.user;
     if (userRole) {
         if (roles.includes(userRole.role.role)) {
             next();

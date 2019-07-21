@@ -1,7 +1,7 @@
 {
-  "name": "express-template",
+  "name": "employee-reimbursement-system",
   "version": "1.0.0",
-  "description": "This is a template for a basic express application",
+  "description": "This is a web application that handles an employee reimbursement system",
   "main": "src/index.ts",
   "scripts": {
     "start": "nodemon src/index.ts",
@@ -9,7 +9,7 @@
     "lint": "tslint src/**/*.ts",
     "lint:fix": "npm run lint -- --fix"
   },
-  "author": "Blake Kruppa",
+  "author": "Christopher Prosser",
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.0",
@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "jest": "^24.8.0",
+    "jsonwebtoken": "^8.5.1",
     "nodemon": "^1.19.1",
     "pg": "^7.11.0",
     "ts-jest": "^24.0.2",

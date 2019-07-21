@@ -7,6 +7,7 @@
 import express from 'express';
 import * as usersDAO from '../daos/users.dao';
 import { authMiddleware } from '../middleware/auth.middleware';
+import { jwtMiddleware } from '../middleware/jwt-middleware';
 
 export const usersRouter = express.Router();
 
@@ -15,7 +16,7 @@ export const usersRouter = express.Router();
  * current user has Administrator or Finance Manager
  * level access.
  */
-usersRouter.get('', [authMiddleware('Administrator', 'Finance Manager'),
+usersRouter.get('', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager'),
 async (req, res) => {
     const users = await usersDAO.findAllUsers();
     res.json(users);
@@ -26,9 +27,9 @@ async (req, res) => {
  * may access this, but employees' IDs must match the
  * provided ID or it won't return.
  */
-usersRouter.get('/:id', [authMiddleware('Administrator', 'Finance Manager' , 'Employee'),
+usersRouter.get('/:id', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager' , 'Employee'),
 async (req, res) => {
-    const currentUser = req.session.user;
+    const currentUser = req.decoded.user;
     if (currentUser && (currentUser.userId === +req.params.id || currentUser.role.role === 'Administrator' || currentUser.role.role === 'Finance Manager')) {
         const users = await usersDAO.findByUserID(req.params.id);
         res.json(users);
@@ -42,7 +43,7 @@ async (req, res) => {
  * This endpoint creates a new user. Administrators are
  * the only ones with access to this endpoint.
  */
-usersRouter.post('', [authMiddleware('Administrator'),
+usersRouter.post('', [jwtMiddleware(), authMiddleware('Administrator'),
 async (req, res) => {
     const user = req.body;
     if (!user) {
@@ -63,7 +64,7 @@ async (req, res) => {
  * This endpoint updates a user. Administrators are the
  * only ones who may access this endpoint.
  */
-usersRouter.patch('', [authMiddleware('Administrator'),
+usersRouter.patch('', [jwtMiddleware(), authMiddleware('Administrator'),
 async (req, res) => {
     const userToUpdate = req.body;
     const updatedUser = await usersDAO.patchUser(userToUpdate);

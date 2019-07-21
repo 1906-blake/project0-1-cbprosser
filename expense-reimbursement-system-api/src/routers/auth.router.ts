@@ -4,6 +4,8 @@
 
 import express from 'express';
 import * as usersDAO from '../daos/users.dao';
+import * as jwt from 'jsonwebtoken';
+import { jwtConfiguration } from '../config/jwt-config';
 
 export const authRouter = express.Router();
 
@@ -18,9 +20,17 @@ authRouter.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await usersDAO.findUserByUserPass(username, password);
     if (user) {
-        req.session.user = user;
-        res.status(200);
-        res.json(user);
+        const token = jwt.sign({user: user},
+            jwtConfiguration.secret,
+            { expiresIn: '24h'
+            }
+          );
+          res.status(200);
+          res.json({
+            success: true,
+            message: 'Authentication successful!',
+            token: token
+          });
     } else {
         req.session.destroy(() => { });
         res.status(400);

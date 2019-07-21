@@ -7,6 +7,7 @@
 import express from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
 import * as reimbursementDAO from '../daos/reimbursements.dao';
+import { jwtMiddleware } from '../middleware/jwt-middleware';
 
 export const reimbursementsRouter = express.Router();
 
@@ -18,7 +19,7 @@ export const reimbursementsRouter = express.Router();
  * CHALLENGE: Have the DB sort using
  * /reimbursements/status/:statudId/date-submitted?start=:startDate&end=:endDate
  */
-reimbursementsRouter.get('/status/:statusId', [authMiddleware('Administrator', 'Finance Manager'),
+reimbursementsRouter.get('/status/:statusId', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager'),
 async (req, res) => {
     const reimbursementId = req.params.statusId;
     if (!reimbursementId) {
@@ -38,9 +39,9 @@ async (req, res) => {
  * CHALLENGE: As above
  *  /reimbursements/author/userId/:userId/date-submitted?start=:startDate&end=:endDate
  */
-reimbursementsRouter.get('/author/userId/:id', [authMiddleware('Administrator', 'Finance Manager', 'Employee'),
+reimbursementsRouter.get('/author/userId/:id', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager', 'Employee'),
 async (req, res) => {
-    const currentUser = req.session.user;
+    const currentUser = req.decoded.user;
     if (currentUser && (currentUser.userId === +req.params.id || currentUser.role.role === 'Administrator' || currentUser.role.role === 'Finance Manager')) {
         const users = await reimbursementDAO.findByUserID(req.params.id);
         res.json(users);
@@ -55,13 +56,13 @@ async (req, res) => {
  * a status code of 201 CREATED if successful. ReimbursementID
  * should be sent as 0, and the DB will serialize it.
  */
-reimbursementsRouter.post('', [authMiddleware('Administrator', 'Finance Manager', 'Employee'),
+reimbursementsRouter.post('', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager', 'Employee'),
 async (req, res) => {
     const reimbursement = req.body;
     if (!reimbursement) {
         res.sendStatus(400);
     } else {
-        const user = req.session.user;
+        const user = req.decoded.user;
         reimbursement.author = user;
         const result = await reimbursementDAO.createReimbursement(reimbursement);
         res.status(201);
@@ -75,13 +76,13 @@ async (req, res) => {
  * as the DB, but any missing fields will not be updated. Returns
  * the updated reimbursement.
  */
-reimbursementsRouter.patch('', [authMiddleware('Administrator', 'Finance Manager'),
+reimbursementsRouter.patch('', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager'),
 async (req, res) => {
     const reimbursement = req.body;
     if (!reimbursement) {
         res.sendStatus(400);
     } else {
-        const user = req.session.user;
+        const user = req.decoded.user;
         reimbursement.resolver = user;
         const result = await reimbursementDAO.patchReimbursement(reimbursement);
         res.send(result);

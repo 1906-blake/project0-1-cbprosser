@@ -47,8 +47,8 @@ export async function findByReimbursementStatus(status: string) {
         SELECT * FROM reimbursement r
         LEFT JOIN reimbursement_status USING (status_id)
         LEFT JOIN reimbursement_type USING (type_id)
-        LEFT JOIN ers_user e1 ON (r.author_id = e1.user_id)
-        LEFT JOIN ers_user e2 ON (r.resolver_id = e1.user_id)
+        LEFT JOIN author_view USING (author_id)
+		LEFT JOIN resolver_view USING (resolver_id)
         WHERE reimbursement_status = $1
         ORDER BY date_submitted`;
         const result = await client.query(queryString, [status]);
@@ -70,8 +70,8 @@ export async function findByUserID(id: number) {
         SELECT * FROM reimbursement r
         LEFT JOIN reimbursement_status USING (status_id)
         LEFT JOIN reimbursement_type USING (type_id)
-        LEFT JOIN ers_user e1 ON (r.author_id = e1.user_id)
-        LEFT JOIN ers_user e2 ON (r.resolver_id = e1.user_id)
+		LEFT JOIN author_view USING (author_id)
+		LEFT JOIN resolver_view USING (resolver_id)
         WHERE author_id = $1
         ORDER BY date_submitted`;
         const result = await client.query(queryString, [id]);
@@ -86,7 +86,6 @@ export async function findByUserID(id: number) {
 }
 
 export async function findByReimbursementID(id: number) {
-    console.log(id);
     let client: PoolClient;
     try {
         client = await connectionPool.connect();
@@ -108,7 +107,6 @@ export async function findByReimbursementID(id: number) {
 
 export async function patchReimbursement(reimbursement: Reimbursement) {
     const oldReimbursement = await findByReimbursementID(reimbursement.reimbursementId);
-    console.log(oldReimbursement);
     if (!oldReimbursement) {
         return undefined;
     }
@@ -138,7 +136,6 @@ export async function patchReimbursement(reimbursement: Reimbursement) {
             LEFT JOIN reimbursement_status USING (status_id)
             LEFT JOIN reimbursement_type USING (type_id)`;
         const params = [reimbursement.resolver.userId, reimbursement.status, reimbursement.reimbursementId];
-        console.log(params);
         const result = await client.query(queryString, params);
         const sqlReimbursement = result.rows[0];
         return convertSQLReimbursement(sqlReimbursement);
