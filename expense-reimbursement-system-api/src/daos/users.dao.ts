@@ -13,17 +13,15 @@ export async function findUserByUserPass(username: string, password: string) {
     try {
         client = await connectionPool.connect();
         const queryString = `
-        WITH authenticated as(
-            SELECT user_id
-            FROM ers_user
-            WHERE username = $1
-            AND password = $2
-        )
-        SELECT *
-        FROM user_no_pass e
-        LEFT JOIN role r
-        ON (e.role = r.role_id)
-        WHERE user_id = (SELECT * FROM authenticated)`;
+        SELECT * FROM ers_user
+        LEFT JOIN role USING (role_id)
+        WHERE password = (
+            SELECT crypt($2, (
+                SELECT password
+                FROM ers_user
+                WHERE username = $1)
+                )
+            )`;
         const result = await client.query(queryString, [username, password]);
         const sqlUser = result.rows[0];
         return sqlUser && convertSQLUser(sqlUser);
@@ -42,8 +40,7 @@ export async function findAllUsers() {
         const queryString = `
         SELECT *
         FROM user_no_pass e
-        LEFT JOIN role r
-        ON (e.role = r.role_id)
+        LEFT JOIN role USING (role_id)
         ORDER BY user_id`;
         const result = await client.query(queryString);
         const sqlUsers = result.rows;
@@ -63,8 +60,7 @@ export async function findByUserID(id: number) {
         const queryString = `
         SELECT *
         FROM user_no_pass e
-        LEFT JOIN role r
-        ON (e.role = r.role_id)
+        LEFT JOIN role USING (role_id)
         WHERE user_id = $1`;
         const result = await client.query(queryString, [id]);
         const sqlUser = result.rows[0];
@@ -82,15 +78,14 @@ export async function createUser(user: User) {
     try {
         client = await connectionPool.connect();
         const queryString = `
-        WITH updated_user AS(
+        WITH inserted_user AS(
             INSERT INTO ers_user (username, password, first_name, last_name, email, role_id)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            VALUES ($1, crypt($2, gen_salt('bf', 7)), $3, $4, $5, $6)
             RETURNING *
-        )
+            )
         SELECT user_id, username, first_name, last_name, email, role_id, role_name
-        FROM updated_user
-        FULL JOIN role USING (role_id)
-        WHERE user_id = (SELECT user_id FROM updated_user)`;
+        FROM inserted_user
+        LEFT JOIN role USING (role_id)`;
         const params = [user.username, user.password, user.firstName, user.lastName, user.email, user.role];
         const result = await client.query(queryString, params);
         const sqlUser = result.rows[0];
@@ -124,7 +119,7 @@ export async function patchUser(user: User) {
                 )
             SELECT user_id, username, first_name, last_name, email, role_id, role_name
             FROM updated_user
-            FULL JOIN role USING (role_id)
+            LEFT JOIN role USING (role_id)
             WHERE user_id = $7
         `;
         const params = [user.username, user.password, user.firstName, user.lastName, user.email, user.role.roleId, user.userId];
