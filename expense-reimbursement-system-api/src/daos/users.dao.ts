@@ -33,7 +33,7 @@ export async function findUserByUserPass(username: string, password: string) {
     }
 }
 
-export async function findAllUsers() {
+export async function findAllUsers(count: number, page: number) {
     let client: PoolClient;
     try {
         client = await connectionPool.connect();
@@ -41,8 +41,10 @@ export async function findAllUsers() {
         SELECT *
         FROM user_no_pass e
         LEFT JOIN role USING (role_id)
-        ORDER BY user_id`;
-        const result = await client.query(queryString);
+        ORDER BY user_id
+        LIMIT $1
+        OFFSET $2`;
+        const result = await client.query(queryString, [count, page]);
         const sqlUsers = result.rows;
         return sqlUsers && sqlUsers.map(convertSQLUser);
     } catch (err) {
