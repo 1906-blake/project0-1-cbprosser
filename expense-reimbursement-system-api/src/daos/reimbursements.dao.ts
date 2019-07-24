@@ -51,7 +51,7 @@ export async function findByReimbursementStatus(status: string, count: number, p
         LEFT JOIN author_view USING (author_id)
 		LEFT JOIN resolver_view USING (resolver_id)
         WHERE reimbursement_status = $1
-        ORDER BY date_submitted
+        ORDER BY date_submitted DESC
         LIMIT $2
         OFFSET $3`;
         const result = await client.query(queryString, [status, count, page]);
@@ -77,7 +77,7 @@ export async function findByReimbursementStatusDateRange(status: string, count: 
 		LEFT JOIN resolver_view USING (resolver_id)
         WHERE reimbursement_status = $1
         AND date_submitted between $4 and $5
-        ORDER BY date_submitted
+        ORDER BY date_submitted DESC
         LIMIT $2
         OFFSET $3`;
         const result = await client.query(queryString, [status, count, page, startDate, endDate]);
@@ -102,7 +102,7 @@ export async function findByUserID(id: number, count: number, page: number) {
 		LEFT JOIN author_view USING (author_id)
 		LEFT JOIN resolver_view USING (resolver_id)
         WHERE author_id = $1
-        ORDER BY date_submitted
+        ORDER BY date_submitted DESC
         LIMIT $2
         OFFSET $3`;
         const result = await client.query(queryString, [id, count, page]);
@@ -128,7 +128,7 @@ export async function findByUserIDDateRange(id: number, count: number, page: num
 		LEFT JOIN resolver_view USING (resolver_id)
         WHERE author_id = $1
         AND date_submitted between $4 and $5
-        ORDER BY date_submitted
+        ORDER BY date_submitted DESC
         LIMIT $2
         OFFSET $3`;
         const result = await client.query(queryString, [id, count, page, startDate, endDate]);
