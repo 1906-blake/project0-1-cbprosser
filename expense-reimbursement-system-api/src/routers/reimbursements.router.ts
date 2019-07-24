@@ -23,6 +23,7 @@ reimbursementsRouter.get('/status/:statusId', [jwtMiddleware(), authMiddleware('
 async (req, res) => {
     const reimbursementId = req.params.statusId;
     let count, page;
+    const startDate = req.query.startDate, endDate = req.query.endDate;
     if (req.query.count !== undefined && req.query.page !== undefined) {
         count = (req.query.count > 10) ? 10 : (req.query.count < 1) ? 1 : req.query.count;
         page = (req.query.page > 0) ? count * (req.query.page - 1) : 0;
@@ -33,7 +34,12 @@ async (req, res) => {
     if (!reimbursementId) {
         res.sendStatus(400);
     } else {
-        const reimbursements = await reimbursementDAO.findByReimbursementStatus(reimbursementId, count, page);
+        let reimbursements;
+        if (!startDate || !endDate) {
+            reimbursements = await reimbursementDAO.findByReimbursementStatus(reimbursementId, count, page);
+        } else {
+            reimbursements = await reimbursementDAO.findByReimbursementStatusDateRange(reimbursementId, count, page, startDate, endDate);
+        }
         res.json(reimbursements);
     }
 }]);
@@ -51,6 +57,7 @@ reimbursementsRouter.get('/author/userId/:id', [jwtMiddleware(), authMiddleware(
 async (req, res) => {
     const currentUser = req.decoded.user;
     let count, page;
+    const startDate = req.query.startDate, endDate = req.query.endDate;
     if (req.query.count !== undefined && req.query.page !== undefined) {
         count = (req.query.count > 10) ? 10 : (req.query.count < 1) ? 1 : req.query.count;
         page = (req.query.page > 0) ? count * (req.query.page - 1) : 0;
@@ -59,7 +66,12 @@ async (req, res) => {
         page = 0;
     }
     if (currentUser && (currentUser.userId === +req.params.id || currentUser.role.role === 'Administrator' || currentUser.role.role === 'Finance Manager')) {
-        const users = await reimbursementDAO.findByUserID(req.params.id, count, page);
+        let users;
+        if (!startDate || !endDate) {
+            users = await reimbursementDAO.findByUserID(req.params.id, count, page);
+        } else {
+            users = await reimbursementDAO.findByUserIDDateRange(req.params.id, count, page, startDate, endDate);
+        }
         res.json(users);
     } else {
         res.status(400);

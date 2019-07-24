@@ -65,6 +65,32 @@ export async function findByReimbursementStatus(status: string, count: number, p
     }
 }
 
+export async function findByReimbursementStatusDateRange(status: string, count: number, page: number, startDate: number, endDate: number) {
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect();
+        const queryString = `
+        SELECT * FROM reimbursement r
+        LEFT JOIN reimbursement_status USING (status_id)
+        LEFT JOIN reimbursement_type USING (type_id)
+        LEFT JOIN author_view USING (author_id)
+		LEFT JOIN resolver_view USING (resolver_id)
+        WHERE reimbursement_status = $1
+        AND date_submitted between $4 and $5
+        ORDER BY date_submitted
+        LIMIT $2
+        OFFSET $3`;
+        const result = await client.query(queryString, [status, count, page, startDate, endDate]);
+        const sqlReimbursement = result.rows;
+        return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+    } catch (err) {
+        console.log(err);
+        return undefined;
+    } finally {
+        client && client.release();
+    }
+}
+
 export async function findByUserID(id: number, count: number, page: number) {
     let client: PoolClient;
     try {
@@ -80,6 +106,32 @@ export async function findByUserID(id: number, count: number, page: number) {
         LIMIT $2
         OFFSET $3`;
         const result = await client.query(queryString, [id, count, page]);
+        const sqlReimbursement = result.rows;
+        return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+    } catch (err) {
+        console.log(err);
+        return undefined;
+    } finally {
+        client && client.release();
+    }
+}
+
+export async function findByUserIDDateRange(id: number, count: number, page: number, startDate: number, endDate: number) {
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect();
+        const queryString = `
+        SELECT * FROM reimbursement r
+        LEFT JOIN reimbursement_status USING (status_id)
+        LEFT JOIN reimbursement_type USING (type_id)
+		LEFT JOIN author_view USING (author_id)
+		LEFT JOIN resolver_view USING (resolver_id)
+        WHERE author_id = $1
+        AND date_submitted between $4 and $5
+        ORDER BY date_submitted
+        LIMIT $2
+        OFFSET $3`;
+        const result = await client.query(queryString, [id, count, page, startDate, endDate]);
         const sqlReimbursement = result.rows;
         return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
     } catch (err) {
