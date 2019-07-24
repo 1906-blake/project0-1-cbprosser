@@ -1,0 +1,20 @@
+.navbar-nav {
+    text-align: end;
+}
+
+.dropdown-menu {
+    text-align: end;
+}
+
+body {
+    background-color: #212529;
+    color: #fff;
+}
+
+.username-signin:placeholder-shown {
+    color: #212529;
+}
+
+.password-signin:placeholder-shown {
+    color: #212529;
+}
