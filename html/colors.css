@@ -1,0 +1,44 @@
+.color-primary-0 { color: #1E1940 }	/* Main Primary color */
+.color-primary-1 { color: #47416D }
+.color-primary-2 { color: #2E2951 }
+.color-primary-3 { color: #100C2C }
+.color-primary-4 { color: #060318 }
+
+.color-secondary-1-0 { color: #5D5A1C }	/* Main Secondary color (1) */
+.color-secondary-1-1 { color: #9E9B54 }
+.color-secondary-1-2 { color: #757232 }
+.color-secondary-1-3 { color: #403D0A }
+.color-secondary-1-4 { color: #232200 }
+
+.color-secondary-2-0 { color: #5D441C }	/* Main Secondary color (2) */
+.color-secondary-2-1 { color: #9E8254 }
+.color-secondary-2-2 { color: #755C32 }
+.color-secondary-2-3 { color: #402C0A }
+.color-secondary-2-4 { color: #231600 }
+
+.bg-primary { background-color: #060318 !important }
+.bg-dark { background-color: #100C2C !important }
+.bg-secondary { background-color: #232200 !important }
+.bg-light { background-color: #403D0A !important }
+/* .bg-success
+.bg-danger
+.bg-warning
+.bg-info
+.bg-white
+.bg-transparent */
+
+.text-primary { color: #FFFFFF !important }
+/* .text-secondary
+.text-success
+.text-danger
+.text-warning
+.text-info
+.text-light
+.text-dark
+.text-body
+.text-muted
+.text-white
+.text-black-50
+.text-white-50 */
+
+

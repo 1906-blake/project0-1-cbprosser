@@ -17,8 +17,8 @@ async function login(event) {
         });
 
         const user = await resp.json();
-
-        console.log(user);
+        localStorage.setItem('tk', user.token);
+        window.location = '/html/index.html';
     } catch (err) {
         console.log(err);
         console.log('Invalid Credentials');

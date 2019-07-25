@@ -18,3 +18,22 @@ nav.innerHTML = `
     <div class="login-navbar"></div>
 </div>
 `
+
+function navGetLogin() {
+    const token = localStorage.tk;
+    if(token) {
+        const user = JSON.parse(atob(localStorage.tk.split('.')[1])).user;
+        let navLogin = document.getElementById('login-navbar');
+        navLogin.innerHTML = '';
+        navLogin.innerHTML = user.username;
+    }
+}
+
+function navGetURL() {
+    const currentURL = document.URL;
+    
+}
+
+function navFunctions() {
+    navGetLogin();
+}
