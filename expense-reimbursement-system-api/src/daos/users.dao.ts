@@ -13,15 +13,17 @@ export async function findUserByUserPass(username: string, password: string) {
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT * FROM ers_user
-        LEFT JOIN role USING (role_id)
-        WHERE password = (
-            SELECT crypt($2, (
-                SELECT password
-                FROM ers_user
-                WHERE username = $1)
+        SELECT * FROM user_no_pass WHERE user_id = (
+            SELECT user_id FROM ers_user
+            LEFT JOIN role USING (role_id)
+            WHERE password = (
+                SELECT crypt($2, (
+                    SELECT password
+                    FROM ers_user
+                    WHERE username = $1)
+                    )
                 )
-            )`;
+        )`;
         const result = await client.query(queryString, [username, password]);
         const sqlUser = result.rows[0];
         return sqlUser && convertSQLUser(sqlUser);
