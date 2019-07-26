@@ -1,5 +1,5 @@
 # User Stories #
-•	As a user, I can log in
+X	As a user, I can log in
 •	As an employee, I can submit a reimbursement
 •	As an employee, I can view my reimbursements
 •	As an employee, I can update my basic profile

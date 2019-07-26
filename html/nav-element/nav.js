@@ -1,39 +1,57 @@
 const nav = document.getElementById('nav-bar');
-nav.classList = 'navbar navbar-expand-sm navbar-dark bg-dark';
+nav.classList = 'navbar navbar-expand-sm fixed-top navbar-dark bg-dark flex-md-nowrap p-0 shadow';
 nav.innerHTML = `
-<a class="navbar-brand" href="#">ERS System</a>
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="true" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-</button>
+<div class="navbar-brand col-sm-3 col-md-2 mr-0 text-center">
+    <a href="/html/index.html"><img src="/html/Images/logo-bw.png" alt="ERS System" width="73" height="23"></a>
+    <button id="nav-button" class="navbar-toggler float-right pt-0 pb-0" type="button" data-toggle="collapse" data-target="#navbarsExample03"
+        aria-controls="navbarsExample03" aria-expanded="true" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
 
-<div class="navbar-collapse collapse show" id="navbarsExample03" style="">
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="./users/users.html">Users</a>
+<div class="navbar-collapse collapse show" id="navbarsExample03">
+    <ul id="active-page" class="navbar-nav mr-auto text-light px-3">
+        <li class="nav-item">
+            <a class="nav-link" href="/html/users/users.html">Users</a>
         </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="./reimbursements/reimbursements.html">Reimbursements</a>
+        <li class="nav-item">
+            <a class="nav-link" href="/html/reimbursements/reimbursements.html">Reimbursements</a>
         </li>
     </ul>
-    <div class="login-navbar"></div>
+    <ul class="navbar-nav text-light px-3">
+        <li id="login-navbar" class="nav-item active">
+            <a class="nav-link" href="/html/Login/login.html">Login</a>
+        </li>
+    </ul>
 </div>
 `
 
 function navGetLogin() {
     const token = localStorage.tk;
-    if(token) {
+    if (token) {
         const user = JSON.parse(atob(localStorage.tk.split('.')[1])).user;
         let navLogin = document.getElementById('login-navbar');
         navLogin.innerHTML = '';
-        navLogin.innerHTML = user.username;
+        navLogin.innerHTML = `<div class="text-light nav-link">${user.username}</div>`;
     }
 }
 
 function navGetURL() {
-    const currentURL = document.URL;
-    
+    const splitURL = document.URL.split('/');
+    const currentURL = splitURL[splitURL.length - 1];
+    const items = document.getElementById('active-page').children;
+    let testURL;
+    for (let i = 0; i < items.length; i++) {
+        testURL = items[i].children[0].attributes[1].value;
+        if(testURL.includes(currentURL)) {
+            console.log(items[i].attributes);
+            items[i].setAttribute('class', 'nav-item active');
+            return;
+        }
+    }
 }
 
 function navFunctions() {
     navGetLogin();
+    navGetURL()
 }
