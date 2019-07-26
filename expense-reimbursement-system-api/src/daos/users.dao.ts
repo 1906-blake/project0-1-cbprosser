@@ -18,10 +18,10 @@ export async function findUserByUserPass(username: string, password: string) {
         WHERE user_id = (
             SELECT user_id FROM ers_user
             WHERE password = (
-                SELECT crypt('cbppass', (
+                SELECT crypt($2, (
                     SELECT password
                     FROM ers_user
-                    WHERE username = 'cbprosser'
+                    WHERE username = $1
                     )
                 )
             )
