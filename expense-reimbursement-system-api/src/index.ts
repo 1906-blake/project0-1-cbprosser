@@ -6,7 +6,7 @@ import { sessionMiddleware } from './middleware/session.middleware';
 import { authRouter } from './routers/auth.router';
 
 // specify the port will run on
-const port = 8012;
+const port = process.env.PORT || 8012;
 const app = express();
 
 /**
@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 app.use((req, resp, next) => {
     console.log(req.get('host'));
     resp.header('Access-Control-Allow-Origin', `${req.headers.origin}`);
-    resp.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    resp.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     resp.header('Access-Control-Allow-Credentials', 'true');
     resp.header('Access-Control-Allow-Methods', 'POST, GET, DELETE, PUT, PATCH');
     next();

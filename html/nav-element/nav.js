@@ -4,7 +4,7 @@ nav.innerHTML = `
 <div class="navbar-brand col-sm-3 col-md-2 mr-0 text-center">
     <a href="/html/index.html"><img src="/html/Images/logo-bw.png" alt="ERS System" width="73" height="23"></a>
     <button id="nav-button" class="navbar-toggler float-right pt-0 pb-0" type="button" data-toggle="collapse" data-target="#navbarsExample03"
-        aria-controls="navbarsExample03" aria-expanded="true" aria-label="Toggle navigation">
+        aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
@@ -44,7 +44,6 @@ function navGetURL() {
     for (let i = 0; i < items.length; i++) {
         testURL = items[i].children[0].attributes[1].value;
         if(testURL.includes(currentURL)) {
-            console.log(items[i].attributes);
             items[i].setAttribute('class', 'nav-item active');
             return;
         }

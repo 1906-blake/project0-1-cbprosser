@@ -25,11 +25,13 @@
             <div class="col-sm-3 col-md-2 d-none d-sm-none d-sm-block"> </div>
             <div class="col bg-light shadow pt-3">
                 <div class="card bg-light">
+                    <div class="card-header p-1">
+                        <h1 class="h2">Reimbursement Dashboard</h1>
+                    </div>
                     <div class="card-body">
                         <main role="main">
                             <div
                                 class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                                <h1 class="h2">Reimbursement Dashboard</h1>
                                 <!-- <div class="btn-toolbar mb-2 mb-md-0">
                                     <div class="btn-group mr-2">
                                         <button type="button" class="btn btn-sm btn-outline-secondary bg-dark text-light">Share</button>
@@ -37,38 +39,96 @@
                                     </div>
                                 </div> -->
                             </div>
-                            <div class="table-responsive bg-light">
-                                <table class="table table-striped table-sm table-hover text-light mb-0">
+                            <div class="table-responsive bg-transparent">
+                                <table id="accordionTable" class="table table-striped table-sm 
+                                    table-hover text-light bg-light mb-0">
+                                    <caption class="p-0 m-0">
+                                        <nav aria-label="...">
+                                            <ul class="pagination pagination-sm justify-content-end m-0">
+                                                <li class="page-item disabled">
+                                                    <a class="page-link" href="#" tabindex="-1"
+                                                        aria-disabled="true">Previous</a>
+                                                </li>
+                                                <li class="page-item active" aria-current="page">
+                                                    <span class="page-link">
+                                                        1
+                                                        <span class="sr-only">(current)</span>
+                                                    </span>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#">Next</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </caption>
                                     <thead>
                                         <tr>
-                                            <th>RID</th>
+                                            <th scope="col" class="d-none d-sm-table-cell">RID</th>
                                             <th>Author</th>
-                                            <th>Date Submtted</th>
+                                            <th>Date Submitted</th>
                                             <th>Amount</th>
                                             <th>Type</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>cbprosser</td>
-                                            <td>07/20/2019</td>
-                                            <td>$350</td>
-                                            <td>Lodging</td>
+                                    <tbody id="reimbursement-table-body">
+                                        <div id="#row1">
+                                            <tr data-toggle="collapse" data-parent="#accordionTable"
+                                                href="#collapseRow1" aria-expanded="false" aria-controls="collapseRow1"
+                                                class="collapsed">
+                                                <td scope="col" class="d-none d-sm-table-cell">1</td>
+                                                <td>cbprosser</td>
+                                                <td>07/20/2019</td>
+                                                <td>$350</td>
+                                                <td>Lodging</td>
+                                            </tr>
+                                        </div>
+                                        <tr id="collapseRow1" class="collapse" role="tabpanel" aria-labelledby="#row1"
+                                            data-parent="#accordionTable">
+                                            <td colspan="5">
+                                                <p>Resolver: cbprosser</p>
+                                                <p>Date Resolved: 07/23/2019</p>
+                                                <p>Status: pending</p>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>cbprosser</td>
-                                            <td>07/13/2019</td>
-                                            <td>$300</td>
-                                            <td>Other</td>
+                                        <div id="#row2">
+                                            <tr data-toggle="collapse" data-parent="#accordionTable"
+                                                href="#collapseRow2" aria-expanded="false" aria-controls="collapseRow2"
+                                                class="collapsed">
+                                                <td scope="col" class="d-none d-sm-table-cell">1</td>
+                                                <td>cbprosser</td>
+                                                <td>07/20/2019</td>
+                                                <td>$350</td>
+                                                <td>Lodging</td>
+                                            </tr>
+                                        </div>
+                                        <tr id="collapseRow2" class="collapse" role="tabpanel" aria-labelledby="#row2"
+                                            data-parent="#accordionTable">
+                                            <td colspan="5">
+                                                <p>Resolver: cbprosser</p>
+                                                <p>Date Resolved: 07/23/2019</p>
+                                                <p>Status: pending</p>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>eldritchblast</td>
-                                            <td>06/30/2019</td>
-                                            <td>$50</td>
-                                            <td>Food</td>
+                                        <div id="#row3">
+                                            <tr data-toggle="collapse" data-parent="#accordionTable"
+                                                href="#collapseRow3" aria-expanded="false" aria-controls="collapseRow3"
+                                                class="collapsed">
+                                                <td scope="col" class="d-none d-sm-table-cell">1</td>
+                                                <td>cbprosser</td>
+                                                <td>07/20/2019</td>
+                                                <td>$350</td>
+                                                <td>Lodging</td>
+                                            </tr>
+                                        </div>
+                                        <tr id="collapseRow3" class="collapse" role="tabpanel" aria-labelledby="#row3"
+                                            data-parent="#accordionTable">
+                                            <td colspan="5">
+                                                <p>Resolver: cbprosser</p>
+                                                <p>Date Resolved: 07/23/2019</p>
+                                                <p>Status: pending</p>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -93,5 +153,6 @@
     crossorigin="anonymous"></script>
 
 <script src="/html/nav-element/nav.js"></script>
+<script src="/html/reimbursements/reimbursements.js"></script>
 
 </html>
