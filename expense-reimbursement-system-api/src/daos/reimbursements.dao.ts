@@ -45,20 +45,25 @@ export async function findByReimbursementStatus(status: string, count: number, p
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
-        LEFT JOIN reimbursement_status USING (status_id)
-        LEFT JOIN reimbursement_type USING (type_id)
-        LEFT JOIN author_view USING (author_id)
-		LEFT JOIN resolver_view USING (resolver_id)
-        WHERE reimbursement_status = $1
+        WITH reimb AS(
+            SELECT * FROM reimbursement r
+                LEFT JOIN reimbursement_status USING (status_id)
+                LEFT JOIN reimbursement_type USING (type_id)
+                LEFT JOIN author_view USING (author_id)
+                LEFT JOIN resolver_view USING (resolver_id)
+                WHERE reimbursement_status = $1
+        )
+        SELECT * FROM (TABLE reimb
         ORDER BY date_submitted DESC
         LIMIT $2
-        OFFSET $3`;
+        OFFSET $3
+        ) sub
+        RIGHT JOIN (SELECT COUNT(*) FROM reimb) c(full_count) ON true`;
         const result = await client.query(queryString, [status, count, page]);
         const sqlReimbursement = result.rows;
         const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
         if (modelReimbursmentWithCount) {
-            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+            modelReimbursmentWithCount.push(sqlReimbursement && sqlReimbursement[0].full_count);
         }
         return modelReimbursmentWithCount;
     } catch (err) {
@@ -74,21 +79,26 @@ export async function findByReimbursementStatusDateRange(status: string, count: 
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
-        LEFT JOIN reimbursement_status USING (status_id)
-        LEFT JOIN reimbursement_type USING (type_id)
-        LEFT JOIN author_view USING (author_id)
-		LEFT JOIN resolver_view USING (resolver_id)
-        WHERE reimbursement_status = $1
-        AND date_submitted between $4 and $5
+        WITH reimb AS(
+            SELECT * FROM reimbursement r
+            LEFT JOIN reimbursement_status USING (status_id)
+            LEFT JOIN reimbursement_type USING (type_id)
+            LEFT JOIN author_view USING (author_id)
+            LEFT JOIN resolver_view USING (resolver_id)
+            WHERE reimbursement_status = $1
+            AND date_submitted between $4 and $5
+        )
+        SELECT * FROM (TABLE reimb
         ORDER BY date_submitted DESC
         LIMIT $2
-        OFFSET $3`;
+        OFFSET $3
+        ) sub
+        RIGHT JOIN (SELECT COUNT(*) FROM reimb) c(full_count) ON true`;
         const result = await client.query(queryString, [status, count, page, startDate, endDate]);
         const sqlReimbursement = result.rows;
         const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
         if (modelReimbursmentWithCount) {
-            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+            modelReimbursmentWithCount.push(sqlReimbursement && sqlReimbursement[0].full_count);
         }
         return modelReimbursmentWithCount;
     } catch (err) {
@@ -104,20 +114,25 @@ export async function findByUserID(id: number, count: number, page: number) {
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
-        LEFT JOIN reimbursement_status USING (status_id)
-        LEFT JOIN reimbursement_type USING (type_id)
-		LEFT JOIN author_view USING (author_id)
-		LEFT JOIN resolver_view USING (resolver_id)
-        WHERE author_id = $1
+        WITH reimb AS(
+            SELECT * FROM reimbursement r
+            LEFT JOIN reimbursement_status USING (status_id)
+            LEFT JOIN reimbursement_type USING (type_id)
+            LEFT JOIN author_view USING (author_id)
+            LEFT JOIN resolver_view USING (resolver_id)
+            WHERE author_id = $1
+        )
+        SELECT * FROM (TABLE reimb
         ORDER BY date_submitted DESC
         LIMIT $2
-        OFFSET $3`;
+        OFFSET $3
+        ) sub
+        RIGHT JOIN (SELECT COUNT(*) FROM reimb) c(full_count) ON true`;
         const result = await client.query(queryString, [id, count, page]);
         const sqlReimbursement = result.rows;
         const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
         if (modelReimbursmentWithCount) {
-            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+            modelReimbursmentWithCount.push(sqlReimbursement && sqlReimbursement[0].full_count);
         }
         return modelReimbursmentWithCount;
     } catch (err) {
@@ -133,21 +148,26 @@ export async function findByUserIDDateRange(id: number, count: number, page: num
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
-        LEFT JOIN reimbursement_status USING (status_id)
-        LEFT JOIN reimbursement_type USING (type_id)
-		LEFT JOIN author_view USING (author_id)
-		LEFT JOIN resolver_view USING (resolver_id)
-        WHERE author_id = $1
-        AND date_submitted between $4 and $5
+        WITH reimb AS(
+            SELECT * FROM reimbursement r
+                LEFT JOIN reimbursement_status USING (status_id)
+                LEFT JOIN reimbursement_type USING (type_id)
+                LEFT JOIN author_view USING (author_id)
+                LEFT JOIN resolver_view USING (resolver_id)
+                WHERE author_id = $1
+                AND date_submitted between $4 and $5
+        )
+        SELECT * FROM (TABLE reimb
         ORDER BY date_submitted DESC
         LIMIT $2
-        OFFSET $3`;
+        OFFSET $3
+        ) sub
+        RIGHT JOIN (SELECT COUNT(*) FROM reimb) c(full_count) ON true`;
         const result = await client.query(queryString, [id, count, page, startDate, endDate]);
         const sqlReimbursement = result.rows;
         const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
         if (modelReimbursmentWithCount) {
-            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+            modelReimbursmentWithCount.push(sqlReimbursement && sqlReimbursement[0].full_count);
         }
         return modelReimbursmentWithCount;
     } catch (err) {

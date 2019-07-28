@@ -52,7 +52,7 @@ export async function findAllUsers(count: number, page: number) {
         const sqlUsers = result.rows;
         const modelUsersWithCount = sqlUsers && sqlUsers.map(convertSQLUser);
         if (modelUsersWithCount) {
-            modelUsersWithCount.push(sqlUsers[0].full_count);
+            modelUsersWithCount.push(sqlUsers && sqlUsers[0].full_count);
         }
         return modelUsersWithCount;
     } catch (err) {

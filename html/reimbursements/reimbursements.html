@@ -87,17 +87,17 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="btn-toolbar mb-2 d-flex justify-content-center">
+                            <div id="paginate-toolbar" class="btn-toolbar mb-2 d-flex justify-content-center">
                                 <div class="btn-group button-group sm mr-2">
-                                    <button type="button" class="btn btn-secondary" disabled>Prev</button>
+                                    <button type="button" class="btn btn-secondary" onclick="prevPage()">Prev</button>
                                 </div>
                                 <div class="btn-group button-group sm mr-2">
-                                    <button type="button" class="btn btn-secondary active" disabled>1</button>
-                                    <button type="button" class="btn btn-secondary">2</button>
+                                    <button type="button" class="btn btn-secondary active">1</button>
+                                    <button type="button" class="btn btn-secondary" disabled>2</button>
                                     <button type="button" class="btn btn-secondary">3</button>
                                 </div>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-secondary">Next</button>
+                                    <button type="button" class="btn btn-secondary" onclick="nextPage()">Next</button>
                                 </div>
                             </div>
                         </main>

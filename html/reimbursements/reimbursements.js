@@ -1,5 +1,9 @@
-async function getReimbursements(type, length, page) {
-    const resp = await fetch(`http://localhost:8012/reimbursements/status/${type}?count=${length}&page=${page}`, {
+let view = 0;
+let currentPage = 1;
+let status;
+
+async function getReimbursements(type, limit, page) {
+    const resp = await fetch(`http://localhost:8012/reimbursements/status/${type}?count=${limit}&page=${page}`, {
         method: 'GET',
         headers: {
             'content-type': 'application/json',
@@ -10,15 +14,16 @@ async function getReimbursements(type, length, page) {
     let tableBody = document.getElementById('reimbursement-table-body');
     tableBody.innerHTML = null;
     let row, data;
-    if(reimbursements.length === 0){
+    if(reimbursements[0].reimbursementId === null){
         row = document.createElement('tr');
         tableBody.appendChild(row);
         data = document.createElement('td');
         data.setAttribute('colspan', '5');
         data.innerHTML = `<p>Oops! Ran out of data to show!</p>`
         row.appendChild(data);
+        return;
     }
-    for(let i = 0; i < reimbursements.length; i++) {
+    for(let i = 0; i < reimbursements.length - 1; i++) {
         /** Create visible row */
         row = document.createElement('tr');
         row.setAttribute('data-toggle','collapse');
@@ -65,23 +70,34 @@ async function getReimbursements(type, length, page) {
 
 function updateStatusDropdown(event) {
     const statusDropdown = document.getElementById('reimbursement-dropdown');
-    const status = event.target.innerText
+    status = event.target.innerText
     statusDropdown.innerText = status;
-    const view = document.getElementById('paginate-dropdown').innerText;
-    if(view !== 'View ')
+    view = +document.getElementById('paginate-dropdown').innerText;
+    if(view && view !== 'View ')
     {
-        console.log(view)
-        getReimbursements(status,+view,1);
+        currentPage = 1;
+        getReimbursements(status, +view,1);
     }
 }
 
 function updatePaginateDropdown(event) {
     const paginateDropdown = document.getElementById('paginate-dropdown');
-    const view = event.target.innerText
+    view = +event.target.innerText
     paginateDropdown.innerText = view;
-    const status = document.getElementById('reimbursement-dropdown').innerText;
-    if(status !== 'Status ')
+    status = document.getElementById('reimbursement-dropdown').innerText;
+    if(status && status !== 'Status ')
     {
-        getReimbursements(status,+view,1);
+        currentPage = 1;
+        getReimbursements(status, +view,1);
     }
+}
+
+async function nextPage() {
+    currentPage++;
+    getReimbursements(status, +view, currentPage);
+}
+
+async function prevPage() {
+    currentPage--;
+    getReimbursements(status, +view, currentPage);
 }
