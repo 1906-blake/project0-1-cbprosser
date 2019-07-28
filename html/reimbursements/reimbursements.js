@@ -115,16 +115,24 @@ function prevPage() {
 function setPage() {
     const toolbar = document.getElementById('paginate-toolbar');
     const buttons = toolbar.children[1];
-    for (let i = 0; i < buttons.children.length; i++) {
+    const lastButton = buttons.children.length - 1;
+    for (let i = 0; i <= lastButton; i++) {
         if (+buttons.children[i].innerText === currentPage) {
             if (i === 0) {
                 toolbar.children[0].children[0].setAttribute('disabled', '');
             } else {
                 toolbar.children[0].children[0].removeAttribute('disabled');
             }
+            if(i === lastButton) {
+                toolbar.children[2].children[0].setAttribute('disabled', '');
+            } else {
+                toolbar.children[2].children[0].removeAttribute('disabled');
+            }
             buttons.children[i].setAttribute('disabled', '');
         } else {
-            buttons.children[i].removeAttribute('disabled');
+            if (buttons.children[i].innerText !== '...') {
+                buttons.children[i].removeAttribute('disabled');
+            }
         }
     }
 }
@@ -138,7 +146,7 @@ function buildPaginationToolbar() {
     if (fullCount < 1) {
         return;
     }
-    
+
     const toolbarContainer = document.getElementById('paginate-toolbar');
     toolbarContainer.innerHTML = null;
     let currentDiv = document.createElement('div');
@@ -162,7 +170,7 @@ function buildPaginationToolbar() {
         currentButton.setAttribute('type', 'button');
         currentButton.setAttribute('class', 'btn btn-secondary');
         if (paginated[i] === '...') {
-            currentButton.setAttribute('disbled', '');
+            currentButton.setAttribute('disabled', '');
         } else {
             currentButton.setAttribute('onclick', 'selectPage(event)');
         }
@@ -180,13 +188,11 @@ function buildPaginationToolbar() {
     currentButton.setAttribute('onclick', 'nextPage()');
     currentButton.innerText = 'next';
     currentDiv.appendChild(currentButton);
-
 }
 
 // Thanks to kottenator for the logic
 // https://gist.github.com/kottenator/9d936eb3e4e3c3e02598
 function pagination(currentPage, finalPage) {
-    console.log(`${currentPage}, ${lastPage}`)
     let left = currentPage - 1,
         right = currentPage + 2,
         range = [],
