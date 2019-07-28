@@ -42,7 +42,7 @@ export async function findAllUsers(count: number, page: number) {
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT *
+        SELECT *, COUNT(*) OVER() AS full_count
         FROM user_no_pass e
         LEFT JOIN role USING (role_id)
         ORDER BY user_id
@@ -50,7 +50,11 @@ export async function findAllUsers(count: number, page: number) {
         OFFSET $2`;
         const result = await client.query(queryString, [count, page]);
         const sqlUsers = result.rows;
-        return sqlUsers && sqlUsers.map(convertSQLUser);
+        const modelUsersWithCount = sqlUsers && sqlUsers.map(convertSQLUser);
+        if (modelUsersWithCount) {
+            modelUsersWithCount.push(sqlUsers[0].full_count);
+        }
+        return modelUsersWithCount;
     } catch (err) {
         console.log(err);
         return undefined;

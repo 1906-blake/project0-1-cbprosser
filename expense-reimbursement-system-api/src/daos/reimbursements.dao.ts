@@ -45,7 +45,7 @@ export async function findByReimbursementStatus(status: string, count: number, p
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT * FROM reimbursement r
+        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
         LEFT JOIN reimbursement_status USING (status_id)
         LEFT JOIN reimbursement_type USING (type_id)
         LEFT JOIN author_view USING (author_id)
@@ -56,7 +56,11 @@ export async function findByReimbursementStatus(status: string, count: number, p
         OFFSET $3`;
         const result = await client.query(queryString, [status, count, page]);
         const sqlReimbursement = result.rows;
-        return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        if (modelReimbursmentWithCount) {
+            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+        }
+        return modelReimbursmentWithCount;
     } catch (err) {
         console.log(err);
         return undefined;
@@ -70,7 +74,7 @@ export async function findByReimbursementStatusDateRange(status: string, count: 
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT * FROM reimbursement r
+        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
         LEFT JOIN reimbursement_status USING (status_id)
         LEFT JOIN reimbursement_type USING (type_id)
         LEFT JOIN author_view USING (author_id)
@@ -82,7 +86,11 @@ export async function findByReimbursementStatusDateRange(status: string, count: 
         OFFSET $3`;
         const result = await client.query(queryString, [status, count, page, startDate, endDate]);
         const sqlReimbursement = result.rows;
-        return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        if (modelReimbursmentWithCount) {
+            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+        }
+        return modelReimbursmentWithCount;
     } catch (err) {
         console.log(err);
         return undefined;
@@ -96,7 +104,7 @@ export async function findByUserID(id: number, count: number, page: number) {
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT * FROM reimbursement r
+        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
         LEFT JOIN reimbursement_status USING (status_id)
         LEFT JOIN reimbursement_type USING (type_id)
 		LEFT JOIN author_view USING (author_id)
@@ -107,7 +115,11 @@ export async function findByUserID(id: number, count: number, page: number) {
         OFFSET $3`;
         const result = await client.query(queryString, [id, count, page]);
         const sqlReimbursement = result.rows;
-        return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        if (modelReimbursmentWithCount) {
+            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+        }
+        return modelReimbursmentWithCount;
     } catch (err) {
         console.log(err);
         return undefined;
@@ -121,7 +133,7 @@ export async function findByUserIDDateRange(id: number, count: number, page: num
     try {
         client = await connectionPool.connect();
         const queryString = `
-        SELECT * FROM reimbursement r
+        SELECT *, COUNT(*) OVER() AS full_count FROM reimbursement r
         LEFT JOIN reimbursement_status USING (status_id)
         LEFT JOIN reimbursement_type USING (type_id)
 		LEFT JOIN author_view USING (author_id)
@@ -133,7 +145,11 @@ export async function findByUserIDDateRange(id: number, count: number, page: num
         OFFSET $3`;
         const result = await client.query(queryString, [id, count, page, startDate, endDate]);
         const sqlReimbursement = result.rows;
-        return sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        const modelReimbursmentWithCount = sqlReimbursement && sqlReimbursement.map(convertSQLReimbursement);
+        if (modelReimbursmentWithCount) {
+            modelReimbursmentWithCount.push(sqlReimbursement[0].full_count);
+        }
+        return modelReimbursmentWithCount;
     } catch (err) {
         console.log(err);
         return undefined;
