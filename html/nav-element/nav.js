@@ -9,7 +9,7 @@ nav.innerHTML = `
     </button>
 </div>
 
-<div class="navbar-collapse collapse show" id="navbarsExample03">
+<div class="navbar-collapse collapse" id="navbarsExample03">
     <ul id="active-page" class="navbar-nav mr-auto text-light px-3">
         <li class="nav-item">
             <a class="nav-link" href="/html/users/users.html">Users</a>

@@ -7,10 +7,17 @@ async function getReimbursements(type, length, page) {
         }
     });
     const reimbursements = await resp.json();
-    console.log(reimbursements);
     let tableBody = document.getElementById('reimbursement-table-body');
     tableBody.innerHTML = null;
     let row, data;
+    if(reimbursements.length === 0){
+        row = document.createElement('tr');
+        tableBody.appendChild(row);
+        data = document.createElement('td');
+        data.setAttribute('colspan', '5');
+        data.innerHTML = `<p>Oops! Ran out of data to show!</p>`
+        row.appendChild(data);
+    }
     for(let i = 0; i < reimbursements.length; i++) {
         /** Create visible row */
         row = document.createElement('tr');
@@ -53,5 +60,28 @@ async function getReimbursements(type, length, page) {
         <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~' }</p>
         <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0,10) : '~'}</p>`
         row.appendChild(data);
+    }
+}
+
+function updateStatusDropdown(event) {
+    const statusDropdown = document.getElementById('reimbursement-dropdown');
+    const status = event.target.innerText
+    statusDropdown.innerText = status;
+    const view = document.getElementById('paginate-dropdown').innerText;
+    if(view !== 'View ')
+    {
+        console.log(view)
+        getReimbursements(status,+view,1);
+    }
+}
+
+function updatePaginateDropdown(event) {
+    const paginateDropdown = document.getElementById('paginate-dropdown');
+    const view = event.target.innerText
+    paginateDropdown.innerText = view;
+    const status = document.getElementById('reimbursement-dropdown').innerText;
+    if(status !== 'Status ')
+    {
+        getReimbursements(status,+view,1);
     }
 }
