@@ -2,7 +2,9 @@ let view = 0;
 let currentPage = 1;
 let lastPage = 1;
 let status;
+let id;
 let fullCount = 0;
+let sortByType = 'ID';
 
 async function getReimbursementsByStatus(type, limit, page) {
     const resp = await fetch(`http://localhost:8012/reimbursements/status/${type}?count=${limit}&page=${page}`, {
@@ -168,12 +170,12 @@ async function getReimbursementsByID(id, limit, page) {
         }
         row.appendChild(data);
     }
-    console.log(`${lastPage}, ${fullCount}`)
     buildPaginationToolbar();
     setPage();
 }
 
 function chooseStatus() {
+    sortByType = 'Status';
     event.target.parentElement.parentElement.setAttribute('class', 'btn-group button-group-sm mr-2');
     event.target.parentElement.setAttribute('class', 'dropdown-menu');
     const title = document.getElementById('reimbHeader');
@@ -213,7 +215,7 @@ function chooseStatus() {
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right"
                                             aria-labelledby="dropdownMenuButton"
-                                            onclick="updateStatusPaginateDropdown(event)">
+                                            onclick="updatePaginateDropdown(event)">
                                             <h6 class="dropdown-header">View per page</h6>
                                             <a class="dropdown-item" type="button">1</a>
                                             <a class="dropdown-item" type="button">3</a>
@@ -243,7 +245,7 @@ function chooseStatus() {
                                 <tbody id='reimbursement-table-body'>
                                     <tr>
                                         <td colspan="5">
-                                            <p class="">Select an option from above</p>
+                                            <p class="">Select options above</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -255,6 +257,7 @@ function chooseStatus() {
 }
 
 function chooseID() {
+    sortByType = 'ID';
     event.target.parentElement.parentElement.setAttribute('class', 'btn-group button-group-sm mr-2');
     event.target.parentElement.setAttribute('class', 'dropdown-menu');
     const title = document.getElementById('reimbHeader');
@@ -272,34 +275,29 @@ function chooseID() {
 
     {
         buttonToolbar.innerHTML += `<div class="btn-group button-group-sm mr-2">
-        <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text">$</span>
-        </div>
-        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-        <div class="input-group-append">
-          <span class="input-group-text">.00</span>
-        </div>
-      </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            View
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right"
-                                            aria-labelledby="dropdownMenuButton"
-                                            onclick="updateIDPaginateDropdown(event)">
-                                            <h6 class="dropdown-header">View per page</h6>
-                                            <a class="dropdown-item" type="button">1</a>
-                                            <a class="dropdown-item" type="button">3</a>
-                                            <a class="dropdown-item" type="button">5</a>
-                                            <a class="dropdown-item" type="button">10</a>
-                                            <a class="dropdown-item" type="button">25</a>
-                                            <a class="dropdown-item" type="button">50</a>
+                                        <div class="input-group">
+                                            <input id="reimbursement-id-input" type="number"
+                                                class="form-control bg-dark text-light" aria-label="reimb-by-user-id">
+                                            <div class="input-group-append" placehoder="Enter user ID">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                    id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                    View
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right"
+                                                    aria-labelledby="dropdownMenuButton"
+                                                    onclick="updatePaginateDropdown(event)">
+                                                    <h6 class="dropdown-header">View per page</h6>
+                                                    <a class="dropdown-item" type="button">1</a>
+                                                    <a class="dropdown-item" type="button">3</a>
+                                                    <a class="dropdown-item" type="button">5</a>
+                                                    <a class="dropdown-item" type="button">10</a>
+                                                    <a class="dropdown-item" type="button">25</a>
+                                                    <a class="dropdown-item" type="button">50</a>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>`;
+                                    </div>`;
     }
 
     {
@@ -319,7 +317,7 @@ function chooseID() {
                                 <tbody id='reimbursement-table-body'>
                                     <tr>
                                         <td colspan="5">
-                                            <p class="">Select an option from above</p>
+                                            <p class="">Select options above.</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -328,6 +326,11 @@ function chooseID() {
                         <div id="paginate-toolbar" class="btn-toolbar mt-2 d-flex justify-content-center">
                         </div>`
     }
+    document.getElementById("reimbursement-id-input").addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            updateIDInput();
+        }
+    });
 }
 
 function updateSearchByDropdown(event) {
@@ -355,35 +358,30 @@ function updateStatusDropdown(event) {
     }
 }
 
-function updateStatusPaginateDropdown(event) {
+function updatePaginateDropdown(event) {
     const paginateDropdown = document.getElementById('paginate-dropdown');
     view = +event.target.innerText
     paginateDropdown.innerText = view;
-    status = document.getElementById('reimbursement-dropdown').innerText;
-    if (status && status !== 'Status ') {
+    if (sortByType === 'Status') {
+        status = document.getElementById('reimbursement-dropdown').innerText;
+        if (status && status !== 'Status ') {
+            currentPage = 1;
+            getReimbursementsByStatus(status, +view, currentPage);
+        }
+    } else if (sortByType === 'ID') {
+        id = document.getElementById("reimbursement-id-input").value;
         currentPage = 1;
-        getReimbursementsByStatus(status, +view, 1);
+        getReimbursementsByID(id, view, currentPage);
     }
 }
 
-function updateIDPaginateDropdown(event) {
-    const paginateDropdown = document.getElementById('paginate-dropdown');
-    view = +event.target.innerText
-    paginateDropdown.innerText = view;
-}
-
 function updateIDInput() {
-    const input = document.getElementById("reimbursement-id-input");
-
-    input.addEventListener("keyup", function (event) {
-        // Number 13 is the "Enter" key on the keyboard
-        if (event.keyCode === 13) {
-            // Cancel the default action, if needed
-            event.preventDefault();
-            // Trigger the button element with a click
-            document.getElementById("myBtn").click();
-        }
-    });
+    id = document.getElementById("reimbursement-id-input").value;
+    view = document.getElementById('paginate-dropdown').innerText;
+    if (view && view !== 'View ') {
+        currentPage = 1;
+        getReimbursementsByID(id, view, currentPage);
+    }
 }
 
 function nextPage() {
@@ -391,7 +389,12 @@ function nextPage() {
         return;
     }
     currentPage++;
-    getReimbursementsByStatus(status, +view, currentPage);
+    if (sortByType === 'Status') {
+        getReimbursementsByStatus(status, +view, currentPage);
+    } else if (sortByType === 'ID') {
+        getReimbursementsByID(id, +view, currentPage);
+    }
+
 }
 
 function prevPage() {
@@ -399,7 +402,11 @@ function prevPage() {
         return;
     }
     currentPage--;
-    getReimbursementsByStatus(status, +view, currentPage);
+    if (sortByType === 'Status') {
+        getReimbursementsByStatus(status, +view, currentPage);
+    } else if (sortByType === 'ID') {
+        getReimbursementsByID(id, +view, currentPage);
+    }
 }
 
 function setPage() {
@@ -429,7 +436,11 @@ function setPage() {
 
 function selectPage(event) {
     currentPage = +event.target.childNodes[0].data;
-    getReimbursementsByStatus(status, view, currentPage);
+    if (sortByType === 'Status') {
+        getReimbursementsByStatus(status, +view, currentPage);
+    } else if (sortByType === 'ID') {
+        getReimbursementsByID(id, +view, currentPage);
+    }
 }
 
 function buildPaginationToolbar() {
