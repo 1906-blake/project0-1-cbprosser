@@ -3,7 +3,7 @@ X	As a user, I can log in
 •	As an employee, I can submit a reimbursement
 •	As an employee, I can view my reimbursements
 •	As an employee, I can update my basic profile
-•	As a finance manager, I can view reimbursements by status
+X	As a finance manager, I can view reimbursements by status
 •	As a finance manager, I can review reimbursements by employee
 •	As an admin, I can view all
 •	As a finance manager, I can approve/deny reimbursements
