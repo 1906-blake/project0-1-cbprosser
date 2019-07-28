@@ -27,48 +27,52 @@
                 <div class="card bg-light">
                     <div class="card-body p-1 pt-2">
                         <div class="card-header">
-                            <h1 class="h3">Dashboard - Reimbursements</h1>
+                            <h1 id="reimbHeader" class="h3">Reimbursements Dashboard</h1>
                         </div>
-                        <main role="main">
-                            <div class="btn-toolbar mb-2 d-flex justify-content-center">
+                        <main id="reimb-main" role="main">
+                            <div class="btn-toolbar mb-2 d-flex justify-content-between">
                                 <div class="btn-group button-group-sm mr-2">
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="reimbursement-dropdown" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            Status
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right"
-                                            aria-labelledby="dropdownMenuButton" onclick="updateStatusDropdown(event)">
-                                            <h6 class="dropdown-header">Status Type</h6>
-                                            <a class="dropdown-item" type="button">Pending</a>
-                                            <a class="dropdown-item" type="button">Approved</a>
-                                            <a class="dropdown-item" type="button">Denied</a>
-                                        </div>
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="reimb-search-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Search by
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                                        onclick="updateSearchByDropdown(event)">
+                                        <h6 class="dropdown-header">Search by</h6>
+                                        <a class="dropdown-item" type="button">Status</a>
+                                        <a class="dropdown-item" type="button">Employee ID</a>
                                     </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button"
-                                            id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            View
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right"
-                                            aria-labelledby="dropdownMenuButton"
-                                            onclick="updatePaginateDropdown(event)">
-                                            <h6 class="dropdown-header">View per page</h6>
-                                            <a class="dropdown-item" type="button">1</a>
-                                            <a class="dropdown-item" type="button">3</a>
-                                            <a class="dropdown-item" type="button">5</a>
-                                            <a class="dropdown-item" type="button">10</a>
-                                            <a class="dropdown-item" type="button">25</a>
-                                            <a class="dropdown-item" type="button">50</a>
+                                </div>
+                                <div class="btn-group button-group-sm mr-2">
+                                    <div class="input-group">
+                                        <input id="reimbursement-id-input" type="text" class="form-control"
+                                            aria-label="reimb-by-user-id" onsubmit="updateIDInput()">
+                                        <div class="input-group-append" placehoder="Enter user ID">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false">
+                                                View
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right"
+                                                aria-labelledby="dropdownMenuButton"
+                                                onclick="updateIDPaginateDropdown(event)">
+                                                <h6 class="dropdown-header">View per page</h6>
+                                                <a class="dropdown-item" type="button">1</a>
+                                                <a class="dropdown-item" type="button">3</a>
+                                                <a class="dropdown-item" type="button">5</a>
+                                                <a class="dropdown-item" type="button">10</a>
+                                                <a class="dropdown-item" type="button">25</a>
+                                                <a class="dropdown-item" type="button">50</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                             <div class="table-responsive bg-transparent">
                                 <table class="table table-striped table-sm 
-                                table-hover text-light bg-light mb-0" id="accordionTable">
+                                    table-hover text-light bg-light mb-0" id="accordionTable">
                                     <thead>
                                         <tr>
                                             <th scope="col" class="d-none d-sm-table-cell">RID</th>

@@ -4,7 +4,7 @@ let lastPage = 1;
 let status;
 let fullCount = 0;
 
-async function getReimbursements(type, limit, page) {
+async function getReimbursementsByStatus(type, limit, page) {
     const resp = await fetch(`http://localhost:8012/reimbursements/status/${type}?count=${limit}&page=${page}`, {
         method: 'GET',
         headers: {
@@ -65,13 +65,283 @@ async function getReimbursements(type, limit, page) {
         data.setAttribute('colspan', '5');
         data.setAttribute('id', `row${i}`);
         data.setAttribute('class', 'collapse');
-        data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
-        <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~'}</p>
-        <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0, 10) : '~'}</p>`
+        if (reimbursements[i].status.status !== 'Pending') {
+            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
+                              <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~'}</p>
+                              <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0, 10) : '~'}</p>`
+        } else {
+            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                Resolve Reimbursement
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                onclick="resolveReimbursement(event)">
+                <a class="dropdown-item" type="button">Approve</a>
+                <a class="dropdown-item" type="button">Deny</a>
+            </div>`
+        }
         row.appendChild(data);
     }
     buildPaginationToolbar();
     setPage();
+}
+
+async function getReimbursementsByID(id, limit, page) {
+    const resp = await fetch(`http://localhost:8012/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json',
+            'authorization': 'Bearer ' + localStorage.tk,
+        }
+    });
+    const reimbursements = await resp.json();
+    let tableBody = document.getElementById('reimbursement-table-body');
+    tableBody.innerHTML = null;
+    let row, data;
+    if (reimbursements[0].reimbursementId === null) {
+        row = document.createElement('tr');
+        tableBody.appendChild(row);
+        data = document.createElement('td');
+        data.setAttribute('colspan', '5');
+        data.innerHTML = `<p>Oops! Ran out of data to show!</p>`
+        row.appendChild(data);
+        return;
+    }
+    lastPage = Math.ceil(+reimbursements[reimbursements.length - 1] / view);
+    fullCount = +reimbursements[reimbursements.length - 1];
+    for (let i = 0; i < reimbursements.length - 1; i++) {
+        /** Create visible row */
+        row = document.createElement('tr');
+        row.setAttribute('data-toggle', 'collapse');
+        row.setAttribute('data-target', `#row${i}`);
+        tableBody.appendChild(row);
+
+        /** Create columns */
+        data = document.createElement('td');
+        data.setAttribute('scope', 'col');
+        data.setAttribute('class', 'd-none d-sm-table-cell');
+        data.innerText = reimbursements[i].reimbursementId;
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].author.username;
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].dateSubmitted.slice(0, 10);
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].amount;
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].type.type;
+        row.appendChild(data);
+
+        /** Create hidden row */
+        row = document.createElement('tr');
+        tableBody.appendChild(row);
+
+        data = document.createElement('td');
+        data.setAttribute('colspan', '5');
+        data.setAttribute('id', `row${i}`);
+        data.setAttribute('class', 'collapse');
+        if (reimbursements[i].status.status !== 'Pending') {
+            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
+                              <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~'}</p>
+                              <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0, 10) : '~'}</p>`
+        } else {
+            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                Resolve Reimbursement
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                onclick="resolveReimbursement(event)">
+                <a class="dropdown-item" type="button">Approve</a>
+                <a class="dropdown-item" type="button">Deny</a>
+            </div>`
+        }
+        row.appendChild(data);
+    }
+    console.log(`${lastPage}, ${fullCount}`)
+    buildPaginationToolbar();
+    setPage();
+}
+
+function chooseStatus() {
+    event.target.parentElement.parentElement.setAttribute('class', 'btn-group button-group-sm mr-2');
+    event.target.parentElement.setAttribute('class', 'dropdown-menu');
+    const title = document.getElementById('reimbHeader');
+    title.innerText = 'Reimbursements by Status';
+
+    const main = document.getElementById('reimb-main');
+    while (main.childElementCount > 1) {
+        main.removeChild(main.children[1]);
+    }
+
+    const buttonToolbar = main.children[0];
+    while (buttonToolbar.childElementCount > 1) {
+        buttonToolbar.removeChild(buttonToolbar.children[1]);
+    }
+
+    {
+        buttonToolbar.innerHTML += `<div class="btn-group button-group-sm mr-2">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="reimbursement-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            Status
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right"
+                                            aria-labelledby="dropdownMenuButton" onclick="updateStatusDropdown(event)">
+                                            <h6 class="dropdown-header">Status Type</h6>
+                                            <a class="dropdown-item" type="button">Pending</a>
+                                            <a class="dropdown-item" type="button">Approved</a>
+                                            <a class="dropdown-item" type="button">Denied</a>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            View
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right"
+                                            aria-labelledby="dropdownMenuButton"
+                                            onclick="updateStatusPaginateDropdown(event)">
+                                            <h6 class="dropdown-header">View per page</h6>
+                                            <a class="dropdown-item" type="button">1</a>
+                                            <a class="dropdown-item" type="button">3</a>
+                                            <a class="dropdown-item" type="button">5</a>
+                                            <a class="dropdown-item" type="button">10</a>
+                                            <a class="dropdown-item" type="button">25</a>
+                                            <a class="dropdown-item" type="button">50</a>
+                                        </div>
+                                    </div>
+                                </div>`;
+    }
+
+    {
+        main.innerHTML += ` <div class="table-responsive bg-transparent">
+                            <table class="table table-striped table-sm 
+                            table-hover text-light bg-light mb-0" id="accordionTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="d-none d-sm-table-cell">RID</th>
+                                        <th>Author</th>
+                                        <th>Date Submitted</th>
+                                        <th>Amount</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id='reimbursement-table-body'>
+                                    <tr>
+                                        <td colspan="5">
+                                            <p class="">Select an option from above</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="paginate-toolbar" class="btn-toolbar mt-2 d-flex justify-content-center">
+                        </div>`
+    }
+}
+
+function chooseID() {
+    event.target.parentElement.parentElement.setAttribute('class', 'btn-group button-group-sm mr-2');
+    event.target.parentElement.setAttribute('class', 'dropdown-menu');
+    const title = document.getElementById('reimbHeader');
+    title.innerText = 'Reimbursements by Employee ID';
+
+    const main = document.getElementById('reimb-main');
+    while (main.childElementCount > 1) {
+        main.removeChild(main.children[1]);
+    }
+
+    const buttonToolbar = main.children[0];
+    while (buttonToolbar.childElementCount > 1) {
+        buttonToolbar.removeChild(buttonToolbar.children[1]);
+    }
+
+    {
+        buttonToolbar.innerHTML += `<div class="btn-group button-group-sm mr-2">
+        <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">$</span>
+        </div>
+        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+        <div class="input-group-append">
+          <span class="input-group-text">.00</span>
+        </div>
+      </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            View
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right"
+                                            aria-labelledby="dropdownMenuButton"
+                                            onclick="updateIDPaginateDropdown(event)">
+                                            <h6 class="dropdown-header">View per page</h6>
+                                            <a class="dropdown-item" type="button">1</a>
+                                            <a class="dropdown-item" type="button">3</a>
+                                            <a class="dropdown-item" type="button">5</a>
+                                            <a class="dropdown-item" type="button">10</a>
+                                            <a class="dropdown-item" type="button">25</a>
+                                            <a class="dropdown-item" type="button">50</a>
+                                        </div>
+                                    </div>
+                                </div>`;
+    }
+
+    {
+        main.innerHTML += ` <div class="table-responsive bg-transparent">
+                            <table class="table table-striped table-sm 
+                            table-hover text-light bg-light mb-0" id="accordionTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="d-none d-sm-table-cell">RID</th>
+                                        <th>Author</th>
+                                        <th>Date Submitted</th>
+                                        <th>Amount</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id='reimbursement-table-body'>
+                                    <tr>
+                                        <td colspan="5">
+                                            <p class="">Select an option from above</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="paginate-toolbar" class="btn-toolbar mt-2 d-flex justify-content-center">
+                        </div>`
+    }
+}
+
+function updateSearchByDropdown(event) {
+    const searchByDropdown = document.getElementById('reimb-search-dropdown');
+    const searchBy = event.target.innerText
+    searchByDropdown.innerText = `Search by ${searchBy}`;
+    switch (searchBy) {
+        case 'Status':
+            chooseStatus();
+            break;
+        case 'Employee ID':
+            chooseID();
+            break;
+    }
 }
 
 function updateStatusDropdown(event) {
@@ -81,19 +351,39 @@ function updateStatusDropdown(event) {
     view = +document.getElementById('paginate-dropdown').innerText;
     if (view && view !== 'View ') {
         currentPage = 1;
-        getReimbursements(status, +view, 1);
+        getReimbursementsByStatus(status, +view, 1);
     }
 }
 
-function updatePaginateDropdown(event) {
+function updateStatusPaginateDropdown(event) {
     const paginateDropdown = document.getElementById('paginate-dropdown');
     view = +event.target.innerText
     paginateDropdown.innerText = view;
     status = document.getElementById('reimbursement-dropdown').innerText;
     if (status && status !== 'Status ') {
         currentPage = 1;
-        getReimbursements(status, +view, 1);
+        getReimbursementsByStatus(status, +view, 1);
     }
+}
+
+function updateIDPaginateDropdown(event) {
+    const paginateDropdown = document.getElementById('paginate-dropdown');
+    view = +event.target.innerText
+    paginateDropdown.innerText = view;
+}
+
+function updateIDInput() {
+    const input = document.getElementById("reimbursement-id-input");
+
+    input.addEventListener("keyup", function (event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            // Trigger the button element with a click
+            document.getElementById("myBtn").click();
+        }
+    });
 }
 
 function nextPage() {
@@ -101,7 +391,7 @@ function nextPage() {
         return;
     }
     currentPage++;
-    getReimbursements(status, +view, currentPage);
+    getReimbursementsByStatus(status, +view, currentPage);
 }
 
 function prevPage() {
@@ -109,7 +399,7 @@ function prevPage() {
         return;
     }
     currentPage--;
-    getReimbursements(status, +view, currentPage);
+    getReimbursementsByStatus(status, +view, currentPage);
 }
 
 function setPage() {
@@ -123,7 +413,7 @@ function setPage() {
             } else {
                 toolbar.children[0].children[0].removeAttribute('disabled');
             }
-            if(i === lastButton) {
+            if (i === lastButton) {
                 toolbar.children[2].children[0].setAttribute('disabled', '');
             } else {
                 toolbar.children[2].children[0].removeAttribute('disabled');
@@ -139,7 +429,7 @@ function setPage() {
 
 function selectPage(event) {
     currentPage = +event.target.childNodes[0].data;
-    getReimbursements(status, view, currentPage);
+    getReimbursementsByStatus(status, view, currentPage);
 }
 
 function buildPaginationToolbar() {
