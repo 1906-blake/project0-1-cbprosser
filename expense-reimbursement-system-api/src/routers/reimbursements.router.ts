@@ -32,7 +32,7 @@ async (req, res) => {
         page = 0;
     }
     if (!reimbursementId) {
-        res.jsonStatus(400);
+        res.sendStatus(400);
     } else {
         let reimbursements;
         if (!startDate || !endDate) {
@@ -88,7 +88,7 @@ reimbursementsRouter.post('', [jwtMiddleware(), authMiddleware('Administrator', 
 async (req, res) => {
     const reimbursement = req.body;
     if (!reimbursement) {
-        res.jsonStatus(400);
+        res.sendStatus(400);
     } else {
         const user = req.decoded.user;
         reimbursement.author = user;
@@ -108,7 +108,7 @@ reimbursementsRouter.patch('', [jwtMiddleware(), authMiddleware('Administrator',
 async (req, res) => {
     const reimbursement = req.body;
     if (!reimbursement) {
-        res.jsonStatus(400);
+        res.sendStatus(400);
     } else {
         const user = req.decoded.user;
         reimbursement.resolver = user;

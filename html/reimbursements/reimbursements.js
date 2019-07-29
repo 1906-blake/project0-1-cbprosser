@@ -4,7 +4,7 @@ let lastPage = 1;
 let status;
 let id;
 let fullCount = 0;
-let sortByType = 'ID';
+let sortByType;
 
 async function getReimbursementsByStatus(type, limit, page) {
     try {
@@ -16,86 +16,7 @@ async function getReimbursementsByStatus(type, limit, page) {
             }
         });
         const reimbursements = await resp.json();
-        let tableBody = document.getElementById('reimbursement-table-body');
-        tableBody.innerHTML = null;
-        let row, data;
-        if ((typeof reimbursements) === 'string') {
-            row = document.createElement('tr');
-            tableBody.appendChild(row);
-            data = document.createElement('td');
-            data.setAttribute('colspan', '5');
-            data.innerHTML = reimbursements;
-            row.appendChild(data);
-            return;
-        }
-        if (reimbursements[0].reimbursementId === null) {
-            row = document.createElement('tr');
-            tableBody.appendChild(row);
-            data = document.createElement('td');
-            data.setAttribute('colspan', '5');
-            data.innerHTML = `<p>Oops! Ran out of data to show!</p>`
-            row.appendChild(data);
-            return;
-        }
-        lastPage = Math.ceil(+reimbursements[reimbursements.length - 1] / view);
-        fullCount = +reimbursements[reimbursements.length - 1];
-        for (let i = 0; i < reimbursements.length - 1; i++) {
-            /** Create visible row */
-            row = document.createElement('tr');
-            row.setAttribute('data-toggle', 'collapse');
-            row.setAttribute('data-target', `#row${i}`);
-            tableBody.appendChild(row);
-
-            /** Create columns */
-            data = document.createElement('td');
-            data.setAttribute('scope', 'col');
-            data.setAttribute('class', 'd-none d-sm-table-cell');
-            data.innerText = reimbursements[i].reimbursementId;
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].author.username;
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].dateSubmitted.slice(0, 10);
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].amount;
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].type.type;
-            row.appendChild(data);
-
-            /** Create hidden row */
-            row = document.createElement('tr');
-            tableBody.appendChild(row);
-
-            data = document.createElement('td');
-            data.setAttribute('colspan', '5');
-            data.setAttribute('id', `row${i}`);
-            data.setAttribute('class', 'collapse');
-            if (reimbursements[i].status.status !== 'Pending') {
-                data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
-                              <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~'}</p>
-                              <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0, 10) : '~'}</p>`
-            } else {
-                data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
-                                    <button class="btn btn-secondary dropdown-toggle" type="button"
-                                        data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        Resolve Reimbursement
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
-                                        onclick="resolveReimbursement(event)">
-                                        <a class="dropdown-item" type="button">Approve</a>
-                                        <a class="dropdown-item" type="button">Deny</a>
-                                    </div>`
-            }
-            row.appendChild(data);
-        }
+        buildTable(reimbursements);
         buildPaginationToolbar();
         setPage();
     } catch (err) {
@@ -113,90 +34,94 @@ async function getReimbursementsByID(id, limit, page) {
             }
         });
         const reimbursements = await resp.json();
-        let tableBody = document.getElementById('reimbursement-table-body');
-        tableBody.innerHTML = null;
-        let row, data;
-        if ((typeof reimbursements) === 'string') {
-            row = document.createElement('tr');
-            tableBody.appendChild(row);
-            data = document.createElement('td');
-            data.setAttribute('colspan', '5');
-            data.innerHTML = reimbursements;
-            row.appendChild(data);
-            return;
-        }
-        if (reimbursements[0].reimbursementId === null) {
-            row = document.createElement('tr');
-            tableBody.appendChild(row);
-            data = document.createElement('td');
-            data.setAttribute('colspan', '5');
-            data.innerHTML = `<p>Oops! Ran out of data to show!</p>`
-            row.appendChild(data);
-            return;
-        }
-        lastPage = Math.ceil(+reimbursements[reimbursements.length - 1] / view);
-        fullCount = +reimbursements[reimbursements.length - 1];
-        for (let i = 0; i < reimbursements.length - 1; i++) {
-            /** Create visible row */
-            row = document.createElement('tr');
-            row.setAttribute('data-toggle', 'collapse');
-            row.setAttribute('data-target', `#row${i}`);
-            tableBody.appendChild(row);
-
-            /** Create columns */
-            data = document.createElement('td');
-            data.setAttribute('scope', 'col');
-            data.setAttribute('class', 'd-none d-sm-table-cell');
-            data.innerText = reimbursements[i].reimbursementId;
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].author.username;
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].dateSubmitted.slice(0, 10);
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].amount;
-            row.appendChild(data);
-
-            data = document.createElement('td');
-            data.innerText = reimbursements[i].type.type;
-            row.appendChild(data);
-
-            /** Create hidden row */
-            row = document.createElement('tr');
-            tableBody.appendChild(row);
-
-            data = document.createElement('td');
-            data.setAttribute('colspan', '5');
-            data.setAttribute('id', `row${i}`);
-            data.setAttribute('class', 'collapse');
-            if (reimbursements[i].status.status !== 'Pending') {
-                data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
-                              <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~'}</p>
-                              <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0, 10) : '~'}</p>`
-            } else {
-                data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
-            <button class="btn btn-secondary dropdown-toggle" type="button"
-                data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                Resolve Reimbursement
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
-                onclick="resolveReimbursement(event)">
-                <a class="dropdown-item" type="button">Approve</a>
-                <a class="dropdown-item" type="button">Deny</a>
-            </div>`
-            }
-            row.appendChild(data);
-        }
+        buildTable(reimbursements);
         buildPaginationToolbar();
         setPage();
     } catch (err) {
         console.log(err);
+    }
+}
+
+function buildTable(reimbursements) {
+    let tableBody = document.getElementById('reimbursement-table-body');
+    tableBody.innerHTML = null;
+    let row, data;
+    if ((typeof reimbursements) === 'string') {
+        row = document.createElement('tr');
+        tableBody.appendChild(row);
+        data = document.createElement('td');
+        data.setAttribute('colspan', '5');
+        data.innerHTML = reimbursements;
+        row.appendChild(data);
+        return;
+    }
+    if (reimbursements[0].reimbursementId === null) {
+        row = document.createElement('tr');
+        tableBody.appendChild(row);
+        data = document.createElement('td');
+        data.setAttribute('colspan', '5');
+        data.innerHTML = `<p>Oops! Ran out of data to show!</p>`
+        row.appendChild(data);
+        return;
+    }
+    lastPage = Math.ceil(+reimbursements[reimbursements.length - 1] / view);
+    fullCount = +reimbursements[reimbursements.length - 1];
+    for (let i = 0; i < reimbursements.length - 1; i++) {
+        /** Create visible row */
+        row = document.createElement('tr');
+        row.setAttribute('data-toggle', 'collapse');
+        row.setAttribute('data-target', `#row${i}`);
+        tableBody.appendChild(row);
+
+        /** Create columns */
+        data = document.createElement('td');
+        data.setAttribute('scope', 'col');
+        data.setAttribute('class', 'd-none d-sm-table-cell');
+        data.innerText = reimbursements[i].reimbursementId;
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].author.username;
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].dateSubmitted.slice(0, 10);
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].amount;
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.innerText = reimbursements[i].type.type;
+        row.appendChild(data);
+
+        /** Create hidden row */
+        row = document.createElement('tr');
+        tableBody.appendChild(row);
+
+        data = document.createElement('td');
+        data.setAttribute('colspan', '5');
+        data.setAttribute('id', `row${i}`);
+        data.setAttribute('class', 'collapse');
+        if (reimbursements[i].status.status !== 'Pending') {
+            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
+                              <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~'}</p>
+                              <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0, 10) : '~'}</p>`
+        } else {
+            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
+                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                    data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    Resolve Reimbursement
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                                    onclick="resolveReimbursement(event)">
+                                    <a class="dropdown-item" type="button">Approve</a>
+                                    <a class="dropdown-item" type="button">Deny</a>
+                                </div>`
+        }
+        row.appendChild(data);
     }
 }
 
@@ -415,12 +340,7 @@ function nextPage() {
         return;
     }
     currentPage++;
-    if (sortByType === 'Status') {
-        getReimbursementsByStatus(status, +view, currentPage);
-    } else if (sortByType === 'ID') {
-        getReimbursementsByID(id, +view, currentPage);
-    }
-
+    getProperReimbursements()
 }
 
 function prevPage() {
@@ -428,11 +348,7 @@ function prevPage() {
         return;
     }
     currentPage--;
-    if (sortByType === 'Status') {
-        getReimbursementsByStatus(status, +view, currentPage);
-    } else if (sortByType === 'ID') {
-        getReimbursementsByID(id, +view, currentPage);
-    }
+    getProperReimbursements();
 }
 
 function setPage() {
@@ -462,11 +378,7 @@ function setPage() {
 
 function selectPage(event) {
     currentPage = +event.target.childNodes[0].data;
-    if (sortByType === 'Status') {
-        getReimbursementsByStatus(status, +view, currentPage);
-    } else if (sortByType === 'ID') {
-        getReimbursementsByID(id, +view, currentPage);
-    }
+    getProperReimbursements();
 }
 
 function buildPaginationToolbar() {
@@ -517,6 +429,14 @@ function buildPaginationToolbar() {
     currentDiv.appendChild(currentButton);
 }
 
+function getProperReimbursements() {
+    if (sortByType === 'Status') {
+        getReimbursementsByStatus(status, +view, currentPage);
+    } else if (sortByType === 'ID') {
+        getReimbursementsByID(id, +view, currentPage);
+    }
+}
+
 // Thanks to kottenator for the logic
 // https://gist.github.com/kottenator/9d936eb3e4e3c3e02598
 function pagination(currentPage, finalPage) {
@@ -545,4 +465,35 @@ function pagination(currentPage, finalPage) {
     }
 
     return rangeWithDots;
+}
+
+async function resolveReimbursement(event) {
+    const choice = event.target.childNodes[0].data;
+    const resolution = (choice === 'Approve') ? 'Approved' : 'Denied';
+    const statusRow = event.target.parentElement.parentElement;
+    const rowNumber = +statusRow.id.split('row')[1];
+    const reimbursementID = +statusRow.parentNode.parentNode.children[rowNumber * 2].children[0].innerText;
+
+    const token = localStorage.tk;
+    if (token) {
+        try {
+            const resp = await fetch(`http://localhost:8012/reimbursements/`, {
+                method: 'PATCH',
+                headers: {
+                    'content-type': 'application/json',
+                    'authorization': 'Bearer ' + localStorage.tk,
+                },
+                body: {
+                    "reimbursementId": reimbursementID,
+                    "status": resolution
+                }
+
+            });
+            console.log(await resp.json());
+            getProperReimbursements();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 }

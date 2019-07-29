@@ -207,7 +207,6 @@ export async function patchReimbursement(reimbursement: Reimbursement) {
         ...oldReimbursement,
         ...reimbursement
     };
-    console.log(reimbursement);
     let client: PoolClient;
     try {
         client = await connectionPool.connect();

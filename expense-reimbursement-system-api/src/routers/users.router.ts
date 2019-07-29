@@ -55,11 +55,11 @@ usersRouter.post('', [jwtMiddleware(), authMiddleware('Administrator'),
 async (req, res) => {
     const user = req.body;
     if (!user) {
-        res.jsonStatus(400);
+        res.sendStatus(400);
     } else {
         const newUser = await usersDAO.createUser(user);
         if (!newUser) {
-            res.jsonStatus(400);
+            res.sendStatus(400);
         } else {
             newUser;
             res.status(201); // created status code
