@@ -444,8 +444,7 @@ function getProperReimbursements() {
     }
 }
 
-// Thanks to kottenator for the logic
-// https://gist.github.com/kottenator/9d936eb3e4e3c3e02598
+
 function pagination(currentPage, finalPage) {
     let left = currentPage - 1,
         right = currentPage + 2,

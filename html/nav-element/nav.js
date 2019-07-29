@@ -37,7 +37,7 @@ function navGetLogin() {
           ${user.username}
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">View Profile</a>
+          <a class="dropdown-item" href="/html/account/account.html">View Profile</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#" onclick='logout()'>Logout</a>
         </div>
