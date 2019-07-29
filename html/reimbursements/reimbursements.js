@@ -17,6 +17,9 @@ async function getReimbursementsByStatus(type, limit, page) {
         });
         const reimbursements = await resp.json();
         buildTable(reimbursements);
+        if (fullCount === 0) {
+            return;
+        }
         buildPaginationToolbar();
         setPage();
     } catch (err) {
@@ -35,6 +38,9 @@ async function getReimbursementsByID(id, limit, page) {
         });
         const reimbursements = await resp.json();
         buildTable(reimbursements);
+        if (fullCount === 0) {
+            return;
+        }
         buildPaginationToolbar();
         setPage();
     } catch (err) {
@@ -304,6 +310,7 @@ function updateStatusDropdown(event) {
     statusDropdown.innerText = status;
     view = +document.getElementById('paginate-dropdown').innerText;
     if (view && view !== 'View ') {
+
         currentPage = 1;
         getReimbursementsByStatus(status, +view, 1);
     }

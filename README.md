@@ -5,8 +5,8 @@ X	As a user, I can log in
 •	As an employee, I can update my basic profile
 X	As a finance manager, I can view reimbursements by status
 X	As a finance manager, I can review reimbursements by employee
-•	As an admin, I can view all employees
-•	As a finance manager, I can approve/deny reimbursements
+X	As an admin, I can view all employees
+X	As a finance manager, I can approve/deny reimbursements
 
 # Expense Reimbursement System (ERS) API
 The Expense Reimbursement System (ERS) will manage the process of reimbursing employees for expenses incurred while on company time. All employees in the company can login and submit requests for reimbursement and view their past tickets and pending requests. Finance managers can log in and view all reimbursement requests and past history for all employees in the company. Finance managers are authorized to approve and deny requests for expense reimbursement.
