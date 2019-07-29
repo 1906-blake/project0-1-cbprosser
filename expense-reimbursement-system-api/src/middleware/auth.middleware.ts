@@ -15,10 +15,10 @@ export const authMiddleware = (...roles: string[]) => (req, res, next) => {
             next();
         } else {
             res.status(403);
-            res.send('You are not authorized for this operation');
+            res.json('You are not authorized for this operation');
         }
     } else {
         res.status(401);
-        res.send('You are not authorized for this operation');
+        res.json('You are not authorized for this operation');
     }
 };

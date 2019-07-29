@@ -32,7 +32,7 @@ async (req, res) => {
         page = 0;
     }
     if (!reimbursementId) {
-        res.sendStatus(400);
+        res.jsonStatus(400);
     } else {
         let reimbursements;
         if (!startDate || !endDate) {
@@ -75,7 +75,7 @@ async (req, res) => {
         res.json(users);
     } else {
         res.status(400);
-        res.send('You can only access your own information.');
+        res.json('You can only access your own information.');
     }
 }]);
 
@@ -88,13 +88,13 @@ reimbursementsRouter.post('', [jwtMiddleware(), authMiddleware('Administrator', 
 async (req, res) => {
     const reimbursement = req.body;
     if (!reimbursement) {
-        res.sendStatus(400);
+        res.jsonStatus(400);
     } else {
         const user = req.decoded.user;
         reimbursement.author = user;
         const result = await reimbursementDAO.createReimbursement(reimbursement);
         res.status(201);
-        res.send(result);
+        res.json(result);
     }
 }]);
 
@@ -108,11 +108,11 @@ reimbursementsRouter.patch('', [jwtMiddleware(), authMiddleware('Administrator',
 async (req, res) => {
     const reimbursement = req.body;
     if (!reimbursement) {
-        res.sendStatus(400);
+        res.jsonStatus(400);
     } else {
         const user = req.decoded.user;
         reimbursement.resolver = user;
         const result = await reimbursementDAO.patchReimbursement(reimbursement);
-        res.send(result);
+        res.json(result);
     }
 }]);

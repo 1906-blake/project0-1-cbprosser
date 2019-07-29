@@ -34,7 +34,7 @@ authRouter.post('/login', async (req, res) => {
     } else {
         req.session.destroy(() => { });
         res.status(400);
-        res.send('Invalid credentials');
+        res.json('Invalid credentials');
     }
 });
 

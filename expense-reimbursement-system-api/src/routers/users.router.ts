@@ -43,7 +43,7 @@ async (req, res) => {
         res.json(users);
     } else {
         res.status(400);
-        res.send('You can only access your own information.');
+        res.json('You can only access your own information.');
     }
 }]);
 
@@ -55,11 +55,11 @@ usersRouter.post('', [jwtMiddleware(), authMiddleware('Administrator'),
 async (req, res) => {
     const user = req.body;
     if (!user) {
-        res.sendStatus(400);
+        res.jsonStatus(400);
     } else {
         const newUser = await usersDAO.createUser(user);
         if (!newUser) {
-            res.sendStatus(400);
+            res.jsonStatus(400);
         } else {
             newUser;
             res.status(201); // created status code
@@ -78,8 +78,8 @@ async (req, res) => {
     const updatedUser = await usersDAO.patchUser(userToUpdate);
     if (!updatedUser) {
         res.status(400);
-        res.send('That user id does not exist.');
+        res.json('That user id does not exist.');
     } else {
-        res.send(updatedUser);
+        res.json(updatedUser);
     }
 }]);
