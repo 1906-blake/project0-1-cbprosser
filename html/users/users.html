@@ -15,24 +15,58 @@
     <link rel='stylesheet' href='/html/css/nav.css'>
     <link rel="stylesheet" href="/html/css/color.css">
     <link rel="stylesheet" href="/html/css/style.css">
+
+    <!-- Login Check for sensitive pages -->
+    <script src="/html/login-check.js"></script>
 </head>
 
 <body onload="navFunctions()">
     <div id="nav-bar"></div>
 
     <div class="container-fluid pt-5 text-light">
-        <div id="main-container" class="row">
-            <div class="col-sm-3 col-md-2 d-none d-sm-none d-sm-block"> </div>
-            <div class="col bg-light shadow pt-3">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <p>This is the template for the page. Data will be loaded into this card</p>
+        <div id="nav-bar"></div>
+
+        <div class="container-fluid pt-5 text-light">
+            <div id="main-container" class="row">
+                <div class="col-sm-3 col-md-2 d-none d-sm-none d-sm-block"></div>
+                <div class="col bg-light shadow pt-3">
+                    <div class="card bg-light">
+                        <div class="card-body p-1 pt-2">
+                            <div class="card-header">
+                                <h1 id="userHeader" class="h3">Users Dashboard</h1>
+                            </div>
+                            <main id="users-main" role="main">
+                                <div class="table-responsive bg-transparent">
+                                    <table class="table table-striped table-sm 
+                                table-hover text-light bg-light mb-0" id="accordionTable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="d-none d-sm-table-cell">UID</th>
+                                                <th>Username</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id='reimbursement-table-body'>
+                                            <tr>
+                                                <td colspan="5">
+                                                    <p class="">Select options above</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="paginate-toolbar" class="btn-toolbar mt-2 d-flex justify-content-center">
+                                </div>
+                            </main>
+                        </div>
                     </div>
                 </div>
+                <div class="col-2 d-none d-sm-none d-md-block"> </div>
             </div>
-            <div class=" col-2 d-none d-sm-none d-md-block"> </div>
         </div>
-    </div>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

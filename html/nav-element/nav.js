@@ -32,7 +32,16 @@ function navGetLogin() {
         const user = JSON.parse(atob(localStorage.tk.split('.')[1])).user;
         let navLogin = document.getElementById('login-navbar');
         navLogin.innerHTML = '';
-        navLogin.innerHTML = `<div class="text-light nav-link">${user.username}</div>`;
+        navLogin.innerHTML = `<div class="dropdown">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuNavButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          ${user.username}
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">View Profile</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#" onclick='logout()'>Logout</a>
+        </div>
+      </div>`;
     }
 }
 
@@ -43,7 +52,7 @@ function navGetURL() {
     let testURL;
     for (let i = 0; i < items.length; i++) {
         testURL = items[i].children[0].attributes[1].value;
-        if(testURL.includes(currentURL)) {
+        if (testURL.includes(currentURL)) {
             items[i].setAttribute('class', 'nav-item active');
             return;
         }
@@ -53,4 +62,9 @@ function navGetURL() {
 function navFunctions() {
     navGetLogin();
     navGetURL()
+}
+
+function logout() {
+    localStorage.removeItem('tk');
+    window.location = '/html/index.html';
 }

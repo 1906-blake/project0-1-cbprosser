@@ -489,7 +489,6 @@ async function resolveReimbursement(event) {
                 })
 
             });
-            console.log(await resp.json());
             getProperReimbursements();
         } catch (err) {
             console.log(err);
