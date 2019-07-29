@@ -483,10 +483,10 @@ async function resolveReimbursement(event) {
                     'content-type': 'application/json',
                     'authorization': 'Bearer ' + localStorage.tk,
                 },
-                body: {
+                body: JSON.stringify({
                     "reimbursementId": reimbursementID,
                     "status": resolution
-                }
+                })
 
             });
             console.log(await resp.json());
