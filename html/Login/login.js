@@ -1,5 +1,3 @@
-import { serverURL } from "../configs";
-
 async function login(event) {
     event.preventDefault();
     const username = document.getElementById('inputUsername').value;
@@ -9,7 +7,7 @@ async function login(event) {
         password
     };
     try {
-        const resp = await fetch(`${serverURL}/login`, {
+        const resp = await fetch(`${window.apiURL}/login`, {
             method: 'POST',
             credentials: 'include',
             body: JSON.stringify(credentials),

@@ -1,5 +1,3 @@
-import { serverURL } from "../configs";
-
 let view = 0;
 let currentPage = 1;
 let lastPage = 1;
@@ -10,7 +8,7 @@ let sortByType;
 
 async function getReimbursementsByStatus(type, limit, page) {
     try {
-        const resp = await fetch(`${serverURL}/reimbursements/status/${type}?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${window.apiURL}/reimbursements/status/${type}?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
@@ -31,7 +29,7 @@ async function getReimbursementsByStatus(type, limit, page) {
 
 async function getReimbursementsByID(id, limit, page) {
     try {
-        const resp = await fetch(`${serverURL}/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${window.apiURL}/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
@@ -48,6 +46,36 @@ async function getReimbursementsByID(id, limit, page) {
     } catch (err) {
         console.log(err);
     }
+}
+
+async function resolveReimbursement(event) {
+    const choice = event.target.childNodes[0].data;
+    const resolution = (choice === 'Approve') ? 'Approved' : 'Denied';
+    const statusRow = event.target.parentElement.parentElement;
+    const rowNumber = +statusRow.id.split('row')[1];
+    const reimbursementID = +statusRow.parentNode.parentNode.children[rowNumber * 2].children[0].innerText;
+
+    const token = localStorage.tk;
+    if (token) {
+        try {
+            const resp = await fetch(`${window.apiURL}/reimbursements/`, {
+                method: 'PATCH',
+                headers: {
+                    'content-type': 'application/json',
+                    'authorization': 'Bearer ' + localStorage.tk,
+                },
+                body: JSON.stringify({
+                    "reimbursementId": reimbursementID,
+                    "status": resolution
+                })
+
+            });
+            getProperReimbursements();
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 }
 
 function buildTable(reimbursements) {
@@ -473,34 +501,4 @@ function pagination(currentPage, finalPage) {
     }
 
     return rangeWithDots;
-}
-
-async function resolveReimbursement(event) {
-    const choice = event.target.childNodes[0].data;
-    const resolution = (choice === 'Approve') ? 'Approved' : 'Denied';
-    const statusRow = event.target.parentElement.parentElement;
-    const rowNumber = +statusRow.id.split('row')[1];
-    const reimbursementID = +statusRow.parentNode.parentNode.children[rowNumber * 2].children[0].innerText;
-
-    const token = localStorage.tk;
-    if (token) {
-        try {
-            const resp = await fetch(`http://localhost:8012/reimbursements/`, {
-                method: 'PATCH',
-                headers: {
-                    'content-type': 'application/json',
-                    'authorization': 'Bearer ' + localStorage.tk,
-                },
-                body: JSON.stringify({
-                    "reimbursementId": reimbursementID,
-                    "status": resolution
-                })
-
-            });
-            getProperReimbursements();
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
 }

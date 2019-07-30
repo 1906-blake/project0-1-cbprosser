@@ -1,5 +1,3 @@
-import { serverURL } from "../configs";
-
 let view = 0;
 let currentPage = 1;
 let lastPage = 1;
@@ -7,7 +5,7 @@ let fullCount = 0;
 
 async function getAllUsers(limit, page) {
     try {
-        const resp = await fetch(`${serverURL}/users?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${window.apiURL}/users?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',

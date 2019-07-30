@@ -1,1 +1,1 @@
-export const serverURL = process.env.ERS_SERVER_URL;
+window.apiURL = 'http://ersapi-env.9wrt6dpfas.us-east-1.elasticbeanstalk.com';
