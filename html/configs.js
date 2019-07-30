@@ -1,0 +1,1 @@
+export const serverURL = process.env.ERS_SERVER_URL;

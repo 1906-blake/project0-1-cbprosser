@@ -1,3 +1,5 @@
+import { serverURL } from "../configs";
+
 async function login(event) {
     event.preventDefault();
     const username = document.getElementById('inputUsername').value;
@@ -7,7 +9,7 @@ async function login(event) {
         password
     };
     try {
-        const resp = await fetch('http://localhost:8012/login', {
+        const resp = await fetch(`${serverURL}/login`, {
             method: 'POST',
             credentials: 'include',
             body: JSON.stringify(credentials),

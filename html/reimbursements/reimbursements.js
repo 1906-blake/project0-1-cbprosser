@@ -1,3 +1,5 @@
+import { serverURL } from "../configs";
+
 let view = 0;
 let currentPage = 1;
 let lastPage = 1;
@@ -8,7 +10,7 @@ let sortByType;
 
 async function getReimbursementsByStatus(type, limit, page) {
     try {
-        const resp = await fetch(`http://localhost:8012/reimbursements/status/${type}?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${serverURL}/reimbursements/status/${type}?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
@@ -29,7 +31,7 @@ async function getReimbursementsByStatus(type, limit, page) {
 
 async function getReimbursementsByID(id, limit, page) {
     try {
-        const resp = await fetch(`http://localhost:8012/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${serverURL}/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
