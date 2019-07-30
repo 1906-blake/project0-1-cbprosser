@@ -27,21 +27,42 @@
         <div id="main-container" class="row">
             <div class="col-sm-3 col-md-2 d-none d-sm-none d-sm-block"> </div>
             <div class="col bg-light shadow pt-3">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Chris Prosser</h1>
-                            <h6 class="card-subtitle mb-2 text-muted">cbprosser</h3>
-                                <p>This is the template for the page. Data will be loaded into this card</p>
-                    </div>
-                    <div class="card-footer text-light p-0">
-                        <ul class="list-group list-group-horizontal ml-2">
-                            <li class="list-group-item bg-transparent border-0 p-2">View your reimbursements</li>
-                            <li class="list-group-item bg-transparent border-0 p-2">Submit a reimbursement</li>
-                            <li class="list-group-item bg-transparent border-0 p-2">Update profile</li>
-                        </ul>
+                <div class="accordion" id="profileAccordion">
+                    <div class="card bg-light">
+                        <div class="card-header">
+                            <h5 class="card-title">Chris Prosser</h1>
+                                <h6 class="card-subtitle mb-2 text-muted">cbprosser</h3>
+                                    <p>This is the template for the page. Data will be loaded into this card</p>
+                        </div>
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                            data-parent="#profileAccordion">
+                            <div class="card-body">
+                                Test 1
+                            </div>
+                        </div>
+                        <div class="dropdown-divider border-dark"></div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                            data-parent="#profileAccordion">
+                            <div class="card-body">
+                                Test 2
+                            </div>
+                        </div>
+                        <div class="dropdown-divider border-dark"></div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                            data-parent="#profileAccordion">
+                            <div class="card-body">
+                                Test 3
+                            </div>
+                        </div>
+                        <div class="card-footer text-light d-flex justify-content-center p-1">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                <button button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Update Profile</button>
+                                <button button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">View Reimbusements</button>
+                                <button button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Submit Reimbursement</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
             <div class="col-2 d-none d-sm-none d-md-block"> </div>
         </div>

@@ -31,7 +31,7 @@ function navGetLogin() {
     if (token) {
         const user = JSON.parse(atob(localStorage.tk.split('.')[1])).user;
         let navLogin = document.getElementById('login-navbar');
-        navLogin.innerHTML = '';
+        navLogin.innerHTML = null;
         navLogin.innerHTML = `<div class="dropdown">
         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuNavButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           ${user.username}

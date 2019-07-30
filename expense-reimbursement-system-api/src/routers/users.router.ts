@@ -35,7 +35,7 @@ async (req, res) => {
  * may access this, but employees' IDs must match the
  * provided ID or it won't return.
  */
-usersRouter.get('/:id', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager' , 'Employee'),
+usersRouter.get('/:id', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager', 'Employee'),
 async (req, res) => {
     const currentUser = req.decoded.user;
     if (currentUser && (currentUser.userId === +req.params.id || currentUser.role.role === 'Administrator' || currentUser.role.role === 'Finance Manager')) {
@@ -72,14 +72,19 @@ async (req, res) => {
  * This endpoint updates a user. Administrators are the
  * only ones who may access this endpoint.
  */
-usersRouter.patch('', [jwtMiddleware(), authMiddleware('Administrator'),
+usersRouter.patch('', [jwtMiddleware(), authMiddleware('Administrator', 'Finance Manager', 'Employee'),
 async (req, res) => {
     const userToUpdate = req.body;
     const updatedUser = await usersDAO.patchUser(userToUpdate);
-    if (!updatedUser) {
-        res.status(400);
-        res.json('That user id does not exist.');
+    const currentUser = req.decoded.user;
+    if (currentUser.role.role === 'Administrator' || userToUpdate.userId === currentUser.userId) {
+        if (!updatedUser) {
+            res.status(400);
+            res.json('That user id does not exist.');
+        } else {
+            res.json(updatedUser);
+        }
     } else {
-        res.json(updatedUser);
+        res.json(`You are not authorized to make modifications to other users' profiles`);
     }
 }]);
