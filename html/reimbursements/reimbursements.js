@@ -8,7 +8,7 @@ let sortByType;
 
 async function getReimbursementsByStatus(type, limit, page) {
     try {
-        const resp = await fetch(`${window.apiURL}/reimbursements/status/${type}?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${window.apiURLd}/reimbursements/status/${type}?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
@@ -29,7 +29,7 @@ async function getReimbursementsByStatus(type, limit, page) {
 
 async function getReimbursementsByID(id, limit, page) {
     try {
-        const resp = await fetch(`${window.apiURL}/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${window.apiURLd}/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
@@ -58,7 +58,7 @@ async function resolveReimbursement(event) {
     const token = localStorage.tk;
     if (token) {
         try {
-            const resp = await fetch(`${window.apiURL}/reimbursements/`, {
+            const resp = await fetch(`${window.apiURLd}/reimbursements/`, {
                 method: 'PATCH',
                 headers: {
                     'content-type': 'application/json',

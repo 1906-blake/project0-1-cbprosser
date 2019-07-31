@@ -6,6 +6,7 @@ import express from 'express';
 import * as usersDAO from '../daos/users.dao';
 import * as jwt from 'jsonwebtoken';
 import { jwtConfiguration } from '../config/jwt-config';
+import { jwtMiddleware } from '../middleware/jwt-middleware';
 
 export const authRouter = express.Router();
 
@@ -20,17 +21,18 @@ authRouter.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await usersDAO.findUserByUserPass(username, password);
     if (user) {
-        const token = jwt.sign({user: user},
+        const token = jwt.sign({ user: user },
             jwtConfiguration.secret,
-            { expiresIn: '24h'
+            {
+                expiresIn: '24h'
             }
-          );
-          res.status(200);
-          res.json({
+        );
+        res.status(200);
+        res.json({
             success: true,
             message: 'Authentication successful!',
             token: token
-          });
+        });
     } else {
         req.session.destroy(() => { });
         res.status(400);
@@ -38,10 +40,24 @@ authRouter.post('/login', async (req, res) => {
     }
 });
 
-/**
- * Used to check the status of the current session. Mostly for
- * development, will remove.
- */
-authRouter.get('/check-session', (req, res) => {
-    res.json(req.session);
-});
+authRouter.get('/login/check', [jwtMiddleware(), async (req, res) => {
+    const user = await usersDAO.findByUserID(req.decoded.user.userId);
+    if (user) {
+        const token = jwt.sign({ user: user },
+            jwtConfiguration.secret,
+            {
+                expiresIn: '24h'
+            }
+        );
+        res.status(200);
+        res.json({
+            success: true,
+            message: 'New Token Supplied!',
+            token: token
+        });
+    } else {
+        req.session.destroy(() => { });
+        res.status(400);
+        res.json('User no longer exists!');
+    }
+}]);

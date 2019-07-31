@@ -30,21 +30,39 @@
                 <div class="accordion" id="profileAccordion">
                     <div class="card bg-light">
                         <div class="card-header">
-                            <ul class="d-flex justify-content-between p-0">
+                            <ul
+                                class="list-group list-group-horizontal-sm justify-content-sm-between text-center text-sm-left p-0">
                                 <li class="list-group-item bg-transparent border-0">
-                                    <h5 class="card-title">Chris Prosser</h1>
-                                        <h6 class="card-subtitle mb-2 text-light">cbprosser</h3>
+                                    <h4 class="card-title font-weight-light">Administrator</h6>
+                                        <h5 class="card-title">Chris Prosser</h1>
+                                            <h6 class="card-subtitle mb-2 text-light font-weight-light">cbprosser</h3>
                                 </li>
                                 <li class="list-group-item bg-transparent border-0">
-                                    <h5 class="card-title">Administrator</h6>
+                                    <div class="btn-group-vertical btn-group-sm" role="group"
+                                        aria-label="Basic example">
+                                        <button button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                            data-target="#collapseOne" aria-expanded="true"
+                                            aria-controls="collapseOne">Submit
+                                            Reimbursement</button>
+                                        <button button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                            data-target="#collapseTwo" aria-expanded="true"
+                                            aria-controls="collapseTwo">View
+                                            Reimbusements</button>
+                                        <button button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                            data-target="#collapseThree" aria-expanded="true"
+                                            aria-controls="collapseThree">Update
+                                            Profile</button>
+                                    </div>
                                 </li>
                             </ul>
-
                         </div>
                         <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
                             data-parent="#profileAccordion">
                             <div class="card-body">
                                 <form id="submitReimbursement">
+                                    <div class="input-group d-flex justify-content-center mb-3">
+                                        <h4>Reimbursement Submission Form</h4>
+                                    </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-dark text-light">$</span>
@@ -95,22 +113,48 @@
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
                             data-parent="#profileAccordion">
                             <div class="card-body">
-                                Test 3
+                                <form id="updateProfile">
+                                    <div class="input-group d-flex justify-content-center mb-3">
+                                        <h4>Profile</h4>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-dark text-light">Username</span>
+                                        </div>
+                                        <input id="updateUsername" type="text" class="form-control bg-light text-light"
+                                            aria-label="cbprosser" placeholder="cbprosser">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-dark text-light">Password</span>
+                                        </div>
+                                        <input id="updateUsername" type="password"
+                                            class="form-control bg-light text-light" aria-label="Password"
+                                            placeholder="Password">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-dark text-light">Name</span>
+                                        </div>
+                                        <input id="updateUsername" type="text" class="form-control bg-light text-light"
+                                            aria-label="Chris Prosser" placeholder="Chris Prosser">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-dark text-light">Email</span>
+                                        </div>
+                                        <input id="updateUsername" type="email" class="form-control bg-light text-light"
+                                            aria-label="chrisbprosser@gmail.com" placeholder="chrisbprosser@gmail.com">
+                                    </div>
+                                    <div class="input-group input-group-sm d-flex justify-content-center mb-3">
+                                        <button id="reimbursementSubmit" type="submit"
+                                            class="btn btn-sm btn-secondary">Save Profile</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                         <div class="card-footer text-light d-flex justify-content-center p-1">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                <button button class="btn btn-secondary" type="button" data-toggle="collapse"
-                                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Submit
-                                    Reimbursement</button>
-                                <button button class="btn btn-secondary" type="button" data-toggle="collapse"
-                                    data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">View
-                                    Reimbusements</button>
-                                <button button class="btn btn-secondary" type="button" data-toggle="collapse"
-                                    data-target="#collapseThree" aria-expanded="true"
-                                    aria-controls="collapseThree">Update
-                                    Profile</button>
-                            </div>
+                            test
                         </div>
                     </div>
                 </div>
