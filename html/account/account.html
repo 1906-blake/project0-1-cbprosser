@@ -30,24 +30,68 @@
                 <div class="accordion" id="profileAccordion">
                     <div class="card bg-light">
                         <div class="card-header">
-                            <h5 class="card-title">Chris Prosser</h1>
-                                <h6 class="card-subtitle mb-2 text-muted">cbprosser</h3>
-                                    <p>This is the template for the page. Data will be loaded into this card</p>
+                            <ul class="d-flex justify-content-between p-0">
+                                <li class="list-group-item bg-transparent border-0">
+                                    <h5 class="card-title">Chris Prosser</h1>
+                                        <h6 class="card-subtitle mb-2 text-light">cbprosser</h3>
+                                </li>
+                                <li class="list-group-item bg-transparent border-0">
+                                    <h5 class="card-title">Administrator</h6>
+                                </li>
+                            </ul>
+
                         </div>
                         <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
                             data-parent="#profileAccordion">
                             <div class="card-body">
-                                Test 1
+                                <form id="submitReimbursement">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-dark text-light">$</span>
+                                        </div>
+                                        <input id="reimbursementAmount" type="number" step=".01"
+                                            class="form-control bg-light text-light" aria-label="Amount"
+                                            placeholder="Amount">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text bg-dark text-light">Reimbursement
+                                                Amount</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <select id="reimbursementType" class="custom-select bg-light text-light">
+                                            <option selected class="bg-dark text-light">Reimbursement Type</option>
+                                            <option value="Food" class="bg-dark text-light">Food</option>
+                                            <option value="Lodging" class="bg-dark text-light">Lodging</option>
+                                            <option value="Travel" class="bg-dark text-light">Travel</option>
+                                            <option value="Other" class="bg-dark text-light">Other</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <label class="input-group-text bg-dark text-light"
+                                                for="inputGroupSelect02">Reimbursement Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <textarea id="reimbursementDescription" class="form-control bg-light text-light"
+                                            aria-label="With textarea" maxlength="300"
+                                            placeholder="Enter a short description of the reimbursement to be submitted. Limit 300 characters."></textarea>
+                                        <div class="input-group-prepend">
+                                            <span
+                                                class="input-group-text bg-dark text-light">Reimbursement<br />Description<br />(0/300)</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group input-group-sm d-flex justify-content-center mb-3">
+                                        <button id="reimbursementSubmit" type="submit"
+                                            class="btn btn-sm btn-secondary">Submit</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="dropdown-divider border-dark"></div>
                         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                             data-parent="#profileAccordion">
                             <div class="card-body">
                                 Test 2
                             </div>
                         </div>
-                        <div class="dropdown-divider border-dark"></div>
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
                             data-parent="#profileAccordion">
                             <div class="card-body">
@@ -56,9 +100,16 @@
                         </div>
                         <div class="card-footer text-light d-flex justify-content-center p-1">
                             <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                <button button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Update Profile</button>
-                                <button button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">View Reimbusements</button>
-                                <button button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Submit Reimbursement</button>
+                                <button button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Submit
+                                    Reimbursement</button>
+                                <button button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                    data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">View
+                                    Reimbusements</button>
+                                <button button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                    data-target="#collapseThree" aria-expanded="true"
+                                    aria-controls="collapseThree">Update
+                                    Profile</button>
                             </div>
                         </div>
                     </div>

@@ -20,7 +20,7 @@ nav.innerHTML = `
     </ul>
     <ul class="navbar-nav text-light px-3">
         <li id="login-navbar" class="nav-item active">
-            <a class="nav-link" href="/html/Login/login.html">Login</a>
+            <a class="nav-link" href="/html/Login/login.html">Login/Sign up</a>
         </li>
     </ul>
 </div>
@@ -33,7 +33,7 @@ function navGetLogin() {
         let navLogin = document.getElementById('login-navbar');
         navLogin.innerHTML = null;
         navLogin.innerHTML = `<div class="dropdown">
-        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuNavButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="nav-link dropdown-toggle" type="button" id="dropdownMenuNavButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           ${user.username}
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
