@@ -7,7 +7,7 @@ async function login(event) {
         password
     };
     try {
-        const resp = await fetch(`${window.apiURLd}/login`, {
+        const resp = await fetch(`${window.apiURL}/login`, {
             method: 'POST',
             credentials: 'include',
             body: JSON.stringify(credentials),

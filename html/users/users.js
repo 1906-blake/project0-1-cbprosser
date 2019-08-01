@@ -5,7 +5,7 @@ let fullCount = 0;
 
 async function getAllUsers(limit, page) {
     try {
-        const resp = await fetch(`${window.apiURLd}/users?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${window.apiURL}/users?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',

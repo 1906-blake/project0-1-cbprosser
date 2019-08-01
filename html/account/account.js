@@ -47,7 +47,7 @@ async function updateUser(event) {
         }
     }
 
-    const respPatch = await fetch(`${window.apiURLd}/users`, {
+    const respPatch = await fetch(`${window.apiURL}/users`, {
         method: 'PATCH',
         credentials: 'include',
         body: JSON.stringify(newUser),
@@ -60,7 +60,7 @@ async function updateUser(event) {
     const returnedUser = await respPatch.json();
 
     if (returnedUser !== "That user id does not exist.") {
-        const respToken = await fetch(`${window.apiURLd}/login/check`, {
+        const respToken = await fetch(`${window.apiURL}/login/check`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -95,7 +95,7 @@ async function submitReimbursement(event) {
         }
     }
 
-    const resp = await fetch(`${window.apiURLd}/reimbursements`, {
+    const resp = await fetch(`${window.apiURL}/reimbursements`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(reimbursement),
@@ -114,7 +114,7 @@ async function submitReimbursement(event) {
 
 async function getReimbursementsByID(id, limit, page) {
     try {
-        const resp = await fetch(`${window.apiURLd}/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
+        const resp = await fetch(`${window.apiURL}/reimbursements/author/userId/${id}?count=${limit}&page=${page}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json',
