@@ -276,7 +276,7 @@ function buildTable(reimbursements) {
         tableBody.appendChild(row);
 
         data = document.createElement('td');
-        data.setAttribute('colspan', '5');
+        data.setAttribute('colspan', '2');
         data.setAttribute('id', `row${i}`);
         data.setAttribute('class', 'collapse');
         if (reimbursements[i].status.status !== 'Pending') {
@@ -284,18 +284,15 @@ function buildTable(reimbursements) {
                               <p>Resolver: ${(reimbursements[i].resolver.username) ? reimbursements[i].resolver.username : '~'}</p>
                               <p>Resolved: ${(reimbursements[i].dateResolved) ? reimbursements[i].dateResolved.slice(0, 10) : '~'}</p>`
         } else {
-            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>
-                                <button class="btn btn-secondary dropdown-toggle" type="button"
-                                    data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    Resolve Reimbursement
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
-                                    onclick="resolveReimbursement(event)">
-                                    <a class="dropdown-item" type="button">Approve</a>
-                                    <a class="dropdown-item" type="button">Deny</a>
-                                </div>`
+            data.innerHTML = `<p>Status: ${reimbursements[i].status.status}</p>`
         }
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.setAttribute('colspan', '3');
+        data.setAttribute('id', `row${i}`);
+        data.setAttribute('class', 'collapse');
+        data.innerHTML = `<p>Description: ${reimbursements[i].description}</p>`
         row.appendChild(data);
     }
 }

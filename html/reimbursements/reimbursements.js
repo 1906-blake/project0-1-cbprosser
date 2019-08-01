@@ -137,7 +137,7 @@ function buildTable(reimbursements) {
         tableBody.appendChild(row);
 
         data = document.createElement('td');
-        data.setAttribute('colspan', '5');
+        data.setAttribute('colspan', '2');
         data.setAttribute('id', `row${i}`);
         data.setAttribute('class', 'collapse');
         if (reimbursements[i].status.status !== 'Pending') {
@@ -157,6 +157,13 @@ function buildTable(reimbursements) {
                                     <a class="dropdown-item" type="button">Deny</a>
                                 </div>`
         }
+        row.appendChild(data);
+
+        data = document.createElement('td');
+        data.setAttribute('colspan', '3');
+        data.setAttribute('id', `row${i}`);
+        data.setAttribute('class', 'collapse');
+        data.innerHTML = `<p>Description: ${reimbursements[i].description}</p>`
         row.appendChild(data);
     }
 }

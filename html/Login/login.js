@@ -17,6 +17,13 @@ async function login(event) {
         });
 
         const user = await resp.json();
+        if (user === 'Invalid credentials') {
+            console.log('Invalid Credentials');
+            const errorElement = document.getElementById('login-error')
+            errorElement.innerText = 'Invalid Credentials';
+            errorElement.style.color = 'red';
+            return;
+        }
         localStorage.setItem('tk', user.token);
         window.location = '/html/index.html';
     } catch (err) {
