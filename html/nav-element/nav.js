@@ -20,7 +20,7 @@ nav.innerHTML = `
     </ul>
     <ul class="navbar-nav text-light px-3">
         <li id="login-navbar" class="nav-item active">
-            <a class="nav-link" href="/html/Login/login.html">Login/Sign up</a>
+            <a class="nav-link" href="/html/Login/login.html">Login</a>
         </li>
     </ul>
 </div>
