@@ -1,9 +1,9 @@
 
 # User Stories #
 X	As a user, I can log in
-•	As an employee, I can submit a reimbursement
-•	As an employee, I can view my reimbursements
-•	As an employee, I can update my basic profile
+X	As an employee, I can submit a reimbursement
+X	As an employee, I can view my reimbursements
+X	As an employee, I can update my basic profile
 X	As a finance manager, I can view reimbursements by status
 X	As a finance manager, I can review reimbursements by employee
 X	As an admin, I can view all employees
