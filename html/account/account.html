@@ -20,7 +20,7 @@
     <script src="/html/login-check.js"></script>
 </head>
 
-<body onload="navFunctions()">
+<body onload="navFunctions(); userUpdateFunctions()">
     <div id="nav-bar"></div>
 
     <div class="container-fluid pt-5 text-light">
@@ -33,9 +33,13 @@
                             <ul
                                 class="list-group list-group-horizontal-sm justify-content-sm-between text-center text-sm-left p-0">
                                 <li class="list-group-item bg-transparent border-0">
-                                    <h4 class="card-title font-weight-light">Administrator</h6>
-                                        <h5 class="card-title">Chris Prosser</h1>
-                                            <h6 class="card-subtitle mb-2 text-light font-weight-light">cbprosser</h3>
+                                    <h4 id="userRole" class="card-title font-weight-light">
+                                        </h6>
+                                        <h5 class="card-title"><span id="userFirstName"></span> <span
+                                                id="userLastName"></span></h1>
+                                            <h6 id="userUsername"
+                                                class="card-subtitle mb-2 text-light font-weight-light">
+                                                </h3>
                                 </li>
                                 <li class="list-group-item bg-transparent border-0">
                                     <div class="btn-group-vertical btn-group-sm" role="group"
@@ -128,7 +132,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-dark text-light">Password</span>
                                         </div>
-                                        <input id="updateUsername" type="password"
+                                        <input id="updatePassword" type="password"
                                             class="form-control bg-light text-light" aria-label="Password"
                                             placeholder="Password">
                                     </div>
@@ -136,25 +140,24 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-dark text-light">Name</span>
                                         </div>
-                                        <input id="updateUsername" type="text" class="form-control bg-light text-light"
-                                            aria-label="Chris Prosser" placeholder="Chris Prosser">
+                                        <input id="updateFirstName" type="text" class="form-control bg-light text-light"
+                                            aria-label="Chris" placeholder="Chris">
+                                        <input id="updateLastName" type="text" class="form-control bg-light text-light"
+                                            aria-label="Prosser" placeholder="Prosser">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text bg-dark text-light">Email</span>
                                         </div>
-                                        <input id="updateUsername" type="email" class="form-control bg-light text-light"
+                                        <input id="updateEmail" type="email" class="form-control bg-light text-light"
                                             aria-label="chrisbprosser@gmail.com" placeholder="chrisbprosser@gmail.com">
                                     </div>
                                     <div class="input-group input-group-sm d-flex justify-content-center mb-3">
-                                        <button id="reimbursementSubmit" type="submit"
-                                            class="btn btn-sm btn-secondary">Save Profile</button>
+                                        <button id="reimbursementSubmit" type="submit" class="btn btn-sm btn-secondary"
+                                            onclick="updateUser(event)">Save Profile</button>
                                     </div>
                                 </form>
                             </div>
-                        </div>
-                        <div class="card-footer text-light d-flex justify-content-center p-1">
-                            test
                         </div>
                     </div>
                 </div>
@@ -175,5 +178,7 @@
     crossorigin="anonymous"></script>
 
 <script src="/html/nav-element/nav.js"></script>
+<script src="/html/account/account.js"></script>
+<script src="/html/configs.js"></script>
 
 </html>
