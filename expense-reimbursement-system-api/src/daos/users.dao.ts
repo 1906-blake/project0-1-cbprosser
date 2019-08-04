@@ -121,7 +121,7 @@ export async function patchUser(user: User) {
     try {
         client = await connectionPool.connect();
 
-        let queryString;
+        let queryString, params;
         if (user.password === '') {
             queryString = `
             WITH updated_user AS(
@@ -132,8 +132,9 @@ export async function patchUser(user: User) {
             SELECT user_id, username, first_name, last_name, email, role_id, role_name
             FROM updated_user
             LEFT JOIN role USING (role_id)
-            WHERE user_id = $7
+            WHERE user_id = $6
         `;
+        params = [user.username, user.firstName, user.lastName, user.email, user.role.roleId, user.userId];
         } else {
             queryString = `
             WITH updated_user AS(
@@ -144,11 +145,11 @@ export async function patchUser(user: User) {
             SELECT user_id, username, first_name, last_name, email, role_id, role_name
             FROM updated_user
             LEFT JOIN role USING (role_id)
-            WHERE user_id = $7
+            WHERE user_id = $6
         `;
+        params = [user.username, user.firstName, user.lastName, user.email, user.role.roleId, user.userId, user.password];
         }
         // This query uses a CTE to make two queries into one.
-        const params = [user.username, user.firstName, user.lastName, user.email, user.role.roleId, user.userId, user.password];
         const result = await client.query(queryString, params);
         const sqlUser = result.rows[0];
         return convertSQLUser(sqlUser);
