@@ -83,26 +83,6 @@ export async function findByUserID(id: number) {
     }
 }
 
-async function findByUserIDPassword(id: number) {
-    let client: PoolClient;
-    try {
-        client = await connectionPool.connect();
-        const queryString = `
-        SELECT *
-        FROM ers_user e
-        LEFT JOIN role USING (role_id)
-        WHERE user_id = $1`;
-        const result = await client.query(queryString, [id]);
-        const sqlUser = result.rows[0];
-        return sqlUser && convertSQLUser(sqlUser);
-    } catch (err) {
-        console.log(err);
-        return undefined;
-    } finally {
-        client && client.release();
-    }
-}
-
 export async function createUser(user: User) {
     let client: PoolClient;
     try {
@@ -129,7 +109,7 @@ export async function createUser(user: User) {
 }
 
 export async function patchUser(user: User) {
-    const oldUser = await findByUserIDPassword(user.userId);
+    const oldUser = await findByUserID(user.userId);
     if (!oldUser) {
         return undefined;
     }
@@ -140,11 +120,13 @@ export async function patchUser(user: User) {
     let client: PoolClient;
     try {
         client = await connectionPool.connect();
-        // This query uses a CTE to make two queries into one.
-        const queryString = `
+
+        let queryString;
+        if (user.password === '') {
+            queryString = `
             WITH updated_user AS(
-                UPDATE ers_user SET username = $1, password = $2, first_name = $3, last_name = $4, email = $5, role_id = $6
-                WHERE user_id = $7
+                UPDATE ers_user SET username = $1, first_name = $2, last_name = $3, email = $4, role_id = $5
+                WHERE user_id = $6
                 RETURNING *
                 )
             SELECT user_id, username, first_name, last_name, email, role_id, role_name
@@ -152,7 +134,21 @@ export async function patchUser(user: User) {
             LEFT JOIN role USING (role_id)
             WHERE user_id = $7
         `;
-        const params = [user.username, user.password, user.firstName, user.lastName, user.email, user.role.roleId, user.userId];
+        } else {
+            queryString = `
+            WITH updated_user AS(
+                UPDATE ers_user SET username = $1, password = crypt($7, gen_salt('bf', 7)), first_name = $2, last_name = $3, email = $4, role_id = $5
+                WHERE user_id = $6
+                RETURNING *
+                )
+            SELECT user_id, username, first_name, last_name, email, role_id, role_name
+            FROM updated_user
+            LEFT JOIN role USING (role_id)
+            WHERE user_id = $7
+        `;
+        }
+        // This query uses a CTE to make two queries into one.
+        const params = [user.username, user.firstName, user.lastName, user.email, user.role.roleId, user.userId, user.password];
         const result = await client.query(queryString, params);
         const sqlUser = result.rows[0];
         return convertSQLUser(sqlUser);
