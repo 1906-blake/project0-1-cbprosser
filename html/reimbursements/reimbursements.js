@@ -1,8 +1,8 @@
-let view = 0;
+let view = 5;
 let currentPage = 1;
 let lastPage = 1;
-let status;
-let id;
+let status = 'Pending';
+let id = (localStorage.tk) ? (JSON.parse(atob(localStorage.tk.split('.')[1])).user.userId) : (0);
 let fullCount = 0;
 let sortByType;
 
@@ -169,6 +169,9 @@ function buildTable(reimbursements) {
 }
 
 function chooseStatus() {
+    currentPage = 1;
+    view = 5;
+    status = 'Pending';
     sortByType = 'Status';
     event.target.parentElement.parentElement.setAttribute('class', 'btn-group button-group-sm mr-2');
     event.target.parentElement.setAttribute('class', 'dropdown-menu');
@@ -191,7 +194,7 @@ function chooseStatus() {
                                         <button class="btn btn-secondary dropdown-toggle" type="button"
                                             id="reimbursement-dropdown" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false">
-                                            Status
+                                            Pending
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right"
                                             aria-labelledby="dropdownMenuButton" onclick="updateStatusDropdown(event)">
@@ -205,7 +208,7 @@ function chooseStatus() {
                                         <button class="btn btn-secondary dropdown-toggle" type="button"
                                             id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false">
-                                            View
+                                            5
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right"
                                             aria-labelledby="dropdownMenuButton"
@@ -248,9 +251,14 @@ function chooseStatus() {
                         <div id="paginate-toolbar" class="btn-toolbar mt-2 d-flex justify-content-center">
                         </div>`
     }
+    
+    getReimbursementsByStatus(status, view, currentPage);
 }
 
 function chooseID() {
+    view = 5;
+    currentPage = 1;
+    id = JSON.parse(atob(localStorage.tk.split('.')[1])).user.userId;
     sortByType = 'ID';
     event.target.parentElement.parentElement.setAttribute('class', 'btn-group button-group-sm mr-2');
     event.target.parentElement.setAttribute('class', 'dropdown-menu');
@@ -271,12 +279,12 @@ function chooseID() {
         buttonToolbar.innerHTML += `<div class="btn-group button-group-sm mr-2">
                                         <div class="input-group">
                                             <input id="reimbursement-id-input" type="number"
-                                                class="form-control bg-dark text-light" aria-label="reimb-by-user-id">
+                                                class="form-control bg-dark text-light" aria-label="reimb-by-user-id" value="${id}">
                                             <div class="input-group-append" placehoder="Enter user ID">
                                                 <button class="btn btn-secondary dropdown-toggle" type="button"
                                                     id="paginate-dropdown" data-toggle="dropdown" aria-haspopup="true"
                                                     aria-expanded="false">
-                                                    View
+                                                    5
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="dropdownMenuButton"
@@ -320,6 +328,8 @@ function chooseID() {
                         <div id="paginate-toolbar" class="btn-toolbar mt-2 d-flex justify-content-center">
                         </div>`
     }
+    
+    getReimbursementsByID(id, view, currentPage);
     document.getElementById("reimbursement-id-input").addEventListener("keyup", function (event) {
         if (event.keyCode === 13) {
             updateIDInput();

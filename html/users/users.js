@@ -1,4 +1,4 @@
-let view = 0;
+let view = 5;
 let currentPage = 1;
 let lastPage = 1;
 let fullCount = 0;
@@ -83,6 +83,10 @@ function buildTable(users) {
         <p>Employee Role: ${users[i].role.role}</p>`;
         row.appendChild(data);
     }
+}
+
+function initialize() {
+    getAllUsers(view, currentPage);
 }
 
 function nextPage() {
