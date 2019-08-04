@@ -83,6 +83,26 @@ export async function findByUserID(id: number) {
     }
 }
 
+async function findByUserIDPassword(id: number) {
+    let client: PoolClient;
+    try {
+        client = await connectionPool.connect();
+        const queryString = `
+        SELECT *
+        FROM ers_user e
+        LEFT JOIN role USING (role_id)
+        WHERE user_id = $1`;
+        const result = await client.query(queryString, [id]);
+        const sqlUser = result.rows[0];
+        return sqlUser && convertSQLUser(sqlUser);
+    } catch (err) {
+        console.log(err);
+        return undefined;
+    } finally {
+        client && client.release();
+    }
+}
+
 export async function createUser(user: User) {
     let client: PoolClient;
     try {
@@ -109,7 +129,7 @@ export async function createUser(user: User) {
 }
 
 export async function patchUser(user: User) {
-    const oldUser = await findByUserID(user.userId);
+    const oldUser = await findByUserIDPassword(user.userId);
     if (!oldUser) {
         return undefined;
     }
