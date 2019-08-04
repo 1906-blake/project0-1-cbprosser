@@ -6,6 +6,7 @@ let id = (localStorage.tk) ? (JSON.parse(atob(localStorage.tk.split('.')[1])).us
 let fullCount = 0;
 let sortByType;
 
+
 async function getReimbursementsByStatus(type, limit, page) {
     try {
         const resp = await fetch(`${window.apiURL}/reimbursements/status/${type}?count=${limit}&page=${page}`, {
