@@ -1,4 +1,4 @@
-let view = 0;
+let view = 5;
 let currentPage = 1;
 let lastPage = 1;
 let fullCount = 0;
@@ -131,6 +131,10 @@ async function getReimbursementsByID(id, limit, page) {
     } catch (err) {
         console.log(err);
     }
+}
+
+function reimbursementsFunctions(){
+    getReimbursementsByID(id, view, currentPage);
 }
 
 function formReset(formID) {
