@@ -143,7 +143,7 @@ export async function patchUser(user: User) {
         // This query uses a CTE to make two queries into one.
         const queryString = `
             WITH updated_user AS(
-                UPDATE ers_user SET username = $1, password = crypt($2, gen_salt('bf', 7)), first_name = $3, last_name = $4, email = $5, role_id = $6
+                UPDATE ers_user SET username = $1, password = $2, first_name = $3, last_name = $4, email = $5, role_id = $6
                 WHERE user_id = $7
                 RETURNING *
                 )
